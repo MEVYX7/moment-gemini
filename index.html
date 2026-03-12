@@ -3,326 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moment of Truth - Genially Extension</title>
+    <title>Moment of Truth - Genially Mini-Game</title>
     <style>
         :root {
-            --primary-color: #6a11cb;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --bg-color: #f8f9fa;
+            --primary: #4A90E2;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg-color: #f4f7f6;
+            --text-main: #333;
+            --band-bg: #ecf0f1;
+            --rail-color: #bdc3c7;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
+            color: var(--text-main);
         }
 
-        #game-viewport {
-            width: 800px;
-            height: 500px;
-            background: white;
+        #game-container {
+            width: 100%;
+            max-width: 800px;
+            height: 100%;
+            max-height: 600px;
+            background: #fff;
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             position: relative;
-            padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            user-select: none;
+            padding: 20px;
+            overflow: hidden;
         }
 
-        /* Верхняя панель: Жизни и Прогресс */
-        .header {
-            width: 100%;
+        /* HUD */
+        .hud {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
         }
+        .lives-system span { color: var(--danger); }
+        .combo-system { color: #f39c12; }
 
-        #track {
-            flex-grow: 1;
-            height: 10px;
-            background: #eee;
-            margin: 0 20px;
-            border-radius: 5px;
+        /* Progress Track */
+        .progress-track {
+            height: 8px;
+            background: var(--rail-color);
+            border-radius: 4px;
+            margin-bottom: 25px;
             position: relative;
         }
-
-        #player-token {
+        .player-token {
             position: absolute;
-            top: -15px;
-            left: 0%;
-            font-size: 24px;
-            transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            transition: left 0.5s ease;
+            z-index: 2;
+        }
+        .finish-icon {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translate(50%, -50%);
+            font-size: 1.5rem;
         }
 
-        #lives-display { font-size: 20px; }
-
-        /* Зона вопроса */
-        #question-area {
+        /* Question */
+        .question-block {
             text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
             margin-bottom: 30px;
-            min-height: 60px;
-        }
-
-        #question-text { font-size: 22px; font-weight: bold; color: #333; }
-
-        /* Игровая шкала */
-        #game-scale {
-            width: 90%;
-            height: 80px;
-            background: #f0f0f0;
-            border-radius: 10px;
-            position: relative;
+            flex-grow: 1;
             display: flex;
-            overflow: hidden;
-            border: 4px solid #333;
+            align-items: center;
+            justify-content: center;
         }
 
-        .segment {
+        /* Unified Answer Zone */
+        .answer-zone {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .answer-rail {
+            width: 100%;
+            height: 6px;
+            background: var(--rail-color);
+            border-radius: 3px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .indicator {
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.6);
+            z-index: 10;
+        }
+
+        .answer-band {
+            display: flex;
+            background: var(--band-bg);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            height: 60px;
+        }
+
+        .answer-text {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            color: #333;
-            border-right: 1px solid rgba(0,0,0,0.1);
-            transition: background 0.3s;
-            padding: 5px;
             text-align: center;
+            font-weight: bold;
+            z-index: 2;
+            transition: opacity 0.3s;
         }
 
-        /* Индикатор */
-        #indicator {
+        .highlight-layer {
             position: absolute;
             top: 0;
-            left: 0;
-            width: 4px;
             height: 100%;
-            background: #ff0000;
-            box-shadow: 0 0 10px rgba(255,0,0,0.8);
-            z-index: 10;
+            z-index: 1;
+            transition: opacity 0.3s ease;
+            opacity: 0;
         }
+        .highlight-correct { background: rgba(46, 204, 113, 0.4); }
+        .highlight-wrong { background: rgba(231, 76, 60, 0.4); }
 
-        /* Кнопка */
-        #stop-btn {
-            margin-top: 40px;
-            padding: 15px 60px;
-            font-size: 20px;
-            font-weight: bold;
-            text-transform: uppercase;
-            background: var(--primary-color);
-            color: white;
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            font-size: 1.2rem;
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
-        }
-
-        #stop-btn:active { transform: translateY(2px); }
-        #stop-btn:disabled { background: #ccc; cursor: not-allowed; }
-
-        /* Анимации попадания */
-        .correct-hit { background-color: var(--success-color) !important; color: white; }
-        .wrong-hit { background-color: var(--error-color) !important; color: white; }
-
-        #combo-badge {
-            position: absolute;
-            right: 20px;
-            bottom: 20px;
             font-weight: bold;
-            color: var(--primary-color);
-            font-size: 18px;
+            transition: transform 0.1s, background 0.2s;
+            color: white;
         }
+        button:active { transform: scale(0.95); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-stop { background: var(--primary); width: 150px; }
+        .btn-bonus { background: #9b59b6; font-size: 1rem; display: none;} /* Hidden till combo >=3 */
+
+        /* Result Banner */
+        .result-banner {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 20;
+        }
+
+        /* Screens */
+        .screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 30;
+        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-<div id="game-viewport">
-    <div class="header">
-        <div id="lives-display">❤️ ❤️ ❤️</div>
-        <div id="track">
-            <div id="player-token">🏃</div>
-        </div>
+<div id="game-container">
+    <div id="screen-start" class="screen">
+        <h1>Moment of Truth</h1>
+        <p style="margin: 20px 0;">Останови индикатор в правильной зоне!</p>
+        <button class="btn-stop" onclick="MomentOfTruth.start()">Старт</button>
     </div>
 
-    <div id="question-area">
-        <div id="question-text">Приготовьтесь...</div>
+    <div id="screen-final" class="screen hidden">
+        <h1 id="final-title">Победа!</h1>
+        <div style="margin: 20px 0; font-size: 1.2rem; text-align: center;">
+            <p>Правильно: <span id="final-correct">0</span></p>
+            <p>Ошибок: <span id="final-wrong">0</span></p>
+        </div>
+        <button class="btn-stop" onclick="MomentOfTruth.restart()">Заново</button>
     </div>
 
-    <div id="game-scale">
-        <div id="indicator"></div>
-        </div>
+    <div class="hud">
+        <div class="question-counter">Вопрос: <span id="ui-q-index">1</span>/<span id="ui-q-total">5</span></div>
+        <div class="combo-system">Комбо: <span id="ui-combo">0</span></div>
+        <div class="lives-system">Жизни: <span id="ui-lives">❤️❤️❤️</span></div>
+    </div>
 
-    <button id="stop-btn">СТОП</button>
-    <div id="combo-badge"></div>
+    <div class="progress-track">
+        <div id="player-token" class="player-token" style="left: 0%;">🏃</div>
+        <div class="finish-icon">🏁</div>
+    </div>
+
+    <div id="question-text" class="question-block">Загрузка вопроса...</div>
+
+    <div class="answer-zone">
+        <div class="answer-rail">
+            <div id="indicator" class="indicator" style="left: 50%;"></div>
+        </div>
+        <div id="answer-band" class="answer-band">
+            </div>
+    </div>
+
+    <div class="controls">
+        <button id="btn-5050" class="btn-bonus" onclick="MomentOfTruth.useBonus('fifty')">50/50</button>
+        <button id="btn-stop" class="btn-stop" onclick="MomentOfTruth.handleStop()">STOP</button>
+        <button id="btn-freeze" class="btn-bonus" onclick="MomentOfTruth.useBonus('freeze')">Freeze</button>
+    </div>
+
+    <div id="result-banner" class="result-banner">Верно!</div>
 </div>
 
 <script>
 /**
- * НАСТРОЙКИ (будут приходить из редактора)
+ * Simple Audio Synthesizer for standalone feedback
  */
-const gameSettings = {
-    lives: 3,
-    stepsToFinish: 5,
-    indicatorSpeed: 2, // 1-5
-    movementType: 'ping-pong', // 'loop' или 'ping-pong'
-    questions: [
-        { q: "Какой газ преобладает в атмосфере Земли?", a: ["Кислород", "Азот", "Углекислый газ", "Аргон"], correct: 1 },
-        { q: "2 + 2 * 2 = ?", a: ["8", "6", "4", "10"], correct: 1 },
-        { q: "Сколько планет в Солнечной системе?", a: ["7", "9", "8", "6"], correct: 2 },
-        { q: "Самый большой океан?", a: ["Атлантический", "Индийский", "Тихий"], correct: 2 }
-    ],
-    design: {
-        tokenEmoji: "🏃",
-        lifeEmoji: "❤️",
-        colors: ["#FFD166", "#06D6A0", "#118AB2", "#EF476F", "#8338EC"]
-    }
+const AudioEngine = {
+    ctx: null,
+    init() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
+    playTone(freq, type, duration) {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = type; osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + duration);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + duration);
+    },
+    correct() { this.init(); this.playTone(600, 'sine', 0.1); setTimeout(() => this.playTone(800, 'sine', 0.2), 100); },
+    wrong() { this.init(); this.playTone(300, 'sawtooth', 0.3); },
+    click() { this.init(); this.playTone(1000, 'square', 0.05); }
 };
 
 /**
- * СОСТОЯНИЕ ИГРЫ
+ * Game Core Logic
  */
-let state = {
-    currentQuestionIdx: 0,
-    currentStep: 0,
-    lives: gameSettings.lives,
-    combo: 0,
-    pos: 0,
-    direction: 1,
-    isMoving: false,
-    canStop: false
-};
+const MomentOfTruth = (function() {
+    // 1. Default Configuration
+    const defaultConfig = {
+        gameplay: { lives: 3, stepsToFinish: 5, continueMode: "auto" },
+        movement: { defaultSpeed: 60, minStopDelayMs: 500 }, // speed: % of rail per second
+        layout: { lockIndicatorOnWrong: true },
+        progress: { playerToken: "🏃", finishIcon: "🏁" },
+        questions: [
+            { id: "q1", question: "Какой цвет получается при смешивании синего и желтого?", answers: ["Красный", "Зеленый", "Фиолетовый"], correct_index: 1 },
+            { id: "q2", question: "Столица Франции?", answers: ["Лондон", "Берлин", "Париж", "Рим"], correct_index: 2 },
+            { id: "q3", question: "Сколько континентов на Земле?", answers: ["5", "6", "7", "8"], correct_index: 1 },
+            { id: "q4", question: "H2O - это формула...", answers: ["Кислорода", "Золота", "Воды"], correct_index: 2 },
+            { id: "q5", question: "Самая большая планета?", answers: ["Марс", "Земля", "Сатурн", "Юпитер"], correct_index: 3 }
+        ]
+    };
 
-const elements = {
-    indicator: document.getElementById('indicator'),
-    scale: document.getElementById('game-scale'),
-    qText: document.getElementById('question-text'),
-    stopBtn: document.getElementById('stop-btn'),
-    livesDisp: document.getElementById('lives-display'),
-    token: document.getElementById('player-token'),
-    comboDisp: document.getElementById('combo-badge')
-};
-
-/**
- * ЛОГИКА
- */
-function initQuestion() {
-    const q = gameSettings.questions[state.currentQuestionIdx];
-    elements.qText.innerText = q.q;
+    let config = { ...defaultConfig };
     
-    // Чистим старые сегменты
-    const oldSegments = document.querySelectorAll('.segment');
-    oldSegments.forEach(s => s.remove());
+    // 2. State Machine
+    const state = {
+        status: "idle", // idle, question_ready, indicator_moving, indicator_frozen, checking_answer, showing_result, game_win, game_lose
+        currentQuestionIndex: 0,
+        lives: 3, correctAnswers: 0, wrongAnswers: 0, combo: 0, progressStep: 0,
+        indicator: { position: 0, direction: 1, speed: 60 },
+        bonuses: { freezeUsed: false, fiftyUsed: false },
+        lastTime: 0,
+        animationFrameId: null,
+        stopTimer: null,
+        freezeTimer: null
+    };
 
-    // Создаем новые
-    q.a.forEach((text, i) => {
-        const seg = document.createElement('div');
-        seg.className = 'segment';
-        seg.innerText = text;
-        seg.style.backgroundColor = gameSettings.design.colors[i % gameSettings.design.colors.length] + "44"; // полупрозрачный
-        elements.scale.appendChild(seg);
-    });
-
-    resetIndicator();
-    setTimeout(() => {
-        state.isMoving = true;
-        state.canStop = true;
-        animate();
-    }, 800);
-}
-
-function resetIndicator() {
-    state.pos = 0;
-    state.direction = 1;
-    state.isMoving = false;
-    state.canStop = false;
-    elements.indicator.style.left = '0%';
-    elements.stopBtn.disabled = false;
-}
-
-function animate() {
-    if (!state.isMoving) return;
-
-    const speed = gameSettings.indicatorSpeed * 0.4;
-    state.pos += speed * state.direction;
-
-    if (gameSettings.movementType === 'ping-pong') {
-        if (state.pos >= 100 || state.pos <= 0) state.direction *= -1;
-    } else {
-        if (state.pos >= 100) state.pos = 0;
+    // 3. DOM Elements Cache
+    const DOM = {};
+    function cacheDOM() {
+        ['ui-q-index', 'ui-q-total', 'ui-combo', 'ui-lives', 'player-token', 'question-text', 
+         'answer-band', 'indicator', 'btn-stop', 'result-banner', 'screen-start', 'screen-final', 
+         'final-title', 'final-correct', 'final-wrong', 'btn-5050', 'btn-freeze'].forEach(id => {
+            DOM[id] = document.getElementById(id);
+        });
     }
 
-    elements.indicator.style.left = state.pos + '%';
-    requestAnimationFrame(animate);
-}
+    // 4. Initialization & API
+    function init(customConfig) {
+        if (customConfig) config = { ...defaultConfig, ...customConfig };
+        cacheDOM();
+        bindEvents();
+        updateUI();
+    }
 
-function handleStop() {
-    if (!state.canStop) return;
-    state.isMoving = false;
-    state.canStop = false;
-    elements.stopBtn.disabled = true;
+    function bindEvents() {
+        // Init Audio on first user interaction to bypass browser autoplay blocks
+        document.body.addEventListener('click', () => AudioEngine.init(), { once: true });
+    }
 
-    const q = gameSettings.questions[state.currentQuestionIdx];
-    const segmentWidth = 100 / q.a.length;
-    const hitIndex = Math.floor(state.pos / segmentWidth);
-    
-    const segments = document.querySelectorAll('.segment');
-    
-    if (hitIndex === q.correct) {
-        // Успех
-        segments[hitIndex].classList.add('correct-hit');
-        state.currentStep++;
-        state.combo++;
-        updateProgress();
-    } else {
-        // Провал
-        segments[hitIndex].classList.add('wrong-hit');
-        segments[q.correct].classList.add('correct-hit');
-        state.lives--;
+    function start() {
+        resetState();
+        DOM['screen-start'].classList.add('hidden');
+        DOM['screen-final'].classList.add('hidden');
+        loadQuestion();
+    }
+
+    function restart() { start(); }
+
+    function resetState() {
+        state.status = "idle";
+        state.currentQuestionIndex = 0;
+        state.lives = config.gameplay.lives;
+        state.correctAnswers = 0;
+        state.wrongAnswers = 0;
         state.combo = 0;
-        updateLives();
+        state.progressStep = 0;
+        state.bonuses = { freezeUsed: false, fiftyUsed: false };
+        DOM['player-token'].style.left = '0%';
+        updateUI();
     }
 
-    setTimeout(() => {
-        if (state.lives <= 0) {
-            alert("Игра окончена! Вы проиграли.");
-            location.reload();
-        } else if (state.currentStep >= gameSettings.stepsToFinish) {
-            alert("ПОБЕДА! Вы дошли до финиша.");
-            location.reload();
-        } else {
-            state.currentQuestionIdx = (state.currentQuestionIdx + 1) % gameSettings.questions.length;
-            initQuestion();
+    // 5. Game Loop (Indicator Movement)
+    function gameLoop(timestamp) {
+        if (!state.lastTime) state.lastTime = timestamp;
+        const delta = timestamp - state.lastTime;
+        state.lastTime = timestamp;
+
+        if (state.status === 'indicator_moving') {
+            state.indicator.position += (state.indicator.speed * (delta / 1000) * state.indicator.direction);
+            
+            if (state.indicator.position >= 100) {
+                state.indicator.position = 100;
+                state.indicator.direction = -1;
+            } else if (state.indicator.position <= 0) {
+                state.indicator.position = 0;
+                state.indicator.direction = 1;
+            }
+            DOM.indicator.style.left = `${state.indicator.position}%`;
         }
-    }, 1500);
-}
 
-function updateLives() {
-    elements.livesDisp.innerText = gameSettings.design.lifeEmoji.repeat(state.lives);
-}
+        if (state.status === 'indicator_moving' || state.status === 'indicator_frozen') {
+            state.animationFrameId = requestAnimationFrame(gameLoop);
+        }
+    }
 
-function updateProgress() {
-    const percent = (state.currentStep / gameSettings.stepsToFinish) * 100;
-    elements.token.style.left = `calc(${percent}% - 20px)`;
-    elements.comboDisp.innerText = state.combo > 1 ? `КОМБО: x${state.combo}` : '';
-}
+    // 6. Gameplay Logic
+    function loadQuestion() {
+        if (state.currentQuestionIndex >= config.questions.length || state.progressStep >= config.gameplay.stepsToFinish) {
+            endGame(true);
+            return;
+        }
 
-// Слушатели
-elements.stopBtn.addEventListener('click', handleStop);
+        const q = config.questions[state.currentQuestionIndex];
+        DOM['question-text'].textContent = q.question;
+        
+        // Render Unified Answer Band
+        DOM['answer-band'].innerHTML = '';
+        q.answers.forEach((ans, i) => {
+            const div = document.createElement('div');
+            div.className = 'answer-text';
+            div.textContent = ans;
+            div.id = `ans-${i}`;
+            DOM['answer-band'].appendChild(div);
+        });
 
-// Старт
-updateLives();
-initQuestion();
+        // Reset indicator
+        state.indicator.position = 0;
+        state.indicator.direction = 1;
+        DOM.indicator.style.left = '0%';
+        
+        // Allow stop only after delay
+        DOM['btn-stop'].disabled = true;
+        clearTimeout(state.stopTimer);
+        state.stopTimer = setTimeout(() => { 
+            if(state.status === 'indicator_moving') DOM['btn-stop'].disabled = false; 
+        }, config.movement.minStopDelayMs);
 
+        updateUI();
+        state.status = 'indicator_moving';
+        state.lastTime = 0;
+        cancelAnimationFrame(state.animationFrameId);
+        state.animationFrameId = requestAnimationFrame(gameLoop);
+    }
+
+    function handleStop() {
+        if (state.status !== 'indicator_moving' && state.status !== 'indicator_frozen') return;
+        
+        state.status = 'checking_answer';
+        cancelAnimationFrame(state.animationFrameId);
+        clearTimeout(state.freezeTimer);
+        AudioEngine.click();
+        
+        const q = config.questions[state.currentQuestionIndex];
+        const numSegments = q.answers.length;
+        const segmentWidth = 100 / numSegments;
+        
+        // Calculate selected segment based on position %
+        let selectedIndex = Math.floor(state.indicator.position / segmentWidth);
+        if (selectedIndex >= numSegments) selectedIndex = numSegments - 1; // edge case
+
+        checkAnswer(selectedIndex, q.correct_index, segmentWidth);
+    }
+
+    function checkAnswer(selectedIndex, correctIndex, segmentWidth) {
+        const isCorrect = selectedIndex === correctIndex;
+        
+        if (isCorrect) {
+            state.correctAnswers++;
+            state.combo++;
+            state.progressStep++;
+            AudioEngine.correct();
+            showBanner("Верно!", "correct");
+            highlightSegment(selectedIndex, segmentWidth, "correct");
+            movePlayerToken();
+        } else {
+            state.wrongAnswers++;
+            state.combo = 0;
+            state.lives--;
+            AudioEngine.wrong();
+            showBanner("Ошибка!", "wrong");
+            highlightSegment(correctIndex, segmentWidth, "correct"); // show right
+            highlightSegment(selectedIndex, segmentWidth, "wrong");  // show wrong
+        }
+
+        updateUI();
+
+        setTimeout(() => {
+            if (state.lives <= 0) {
+                endGame(false);
+            } else {
+                state.currentQuestionIndex++;
+                loadQuestion();
+            }
+        }, 2000);
+    }
+
+    // 7. Visuals & UI
+    function highlightSegment(index, widthPct, type) {
+        const layer = document.createElement('div');
+        layer.className = `highlight-layer highlight-${type}`;
+        layer.style.width = `${widthPct}%`;
+        layer.style.left = `${index * widthPct}%`;
+        DOM['answer-band'].appendChild(layer);
+        
+        // Trigger reflow for animation
+        void layer.offsetWidth;
+        layer.style.opacity = '1';
+    }
+
+    function showBanner(text, type) {
+        DOM['result-banner'].textContent = text;
+        DOM['result-banner'].style.background = type === 'correct' ? 'rgba(46, 204, 113, 0.9)' : 'rgba(231, 76, 60, 0.9)';
+        DOM['result-banner'].style.opacity = '1';
+        setTimeout(() => DOM['result-banner'].style.opacity = '0', 1500);
+    }
+
+    function updateUI() {
+        DOM['ui-q-index'].textContent = Math.min(state.currentQuestionIndex + 1, config.questions.length);
+        DOM['ui-q-total'].textContent = config.questions.length;
+        DOM['ui-combo'].textContent = state.combo;
+        DOM['ui-lives'].textContent = "❤️".repeat(Math.max(0, state.lives));
+
+        // Bonuses display logic (Unlock at combo >= 3)
+        const showBonuses = state.combo >= 3;
+        DOM['btn-5050'].style.display = showBonuses && !state.bonuses.fiftyUsed ? 'block' : 'none';
+        DOM['btn-freeze'].style.display = showBonuses && !state.bonuses.freezeUsed ? 'block' : 'none';
+    }
+
+    function movePlayerToken() {
+        const progressPct = (state.progressStep / config.gameplay.stepsToFinish) * 100;
+        DOM['player-token'].style.left = `${Math.min(100, progressPct)}%`;
+    }
+
+    // 8. Bonuses
+    function useBonus(type) {
+        if (state.status !== 'indicator_moving') return;
+        AudioEngine.click();
+
+        if (type === 'fifty' && !state.bonuses.fiftyUsed) {
+            state.bonuses.fiftyUsed = true;
+            const q = config.questions[state.currentQuestionIndex];
+            let hidden = 0;
+            // Hide up to 2 wrong answers
+            for (let i = 0; i < q.answers.length; i++) {
+                if (i !== q.correct_index && hidden < 2) {
+                    DOM[`ans-${i}`].style.opacity = '0.2';
+                    hidden++;
+                }
+            }
+        } 
+        else if (type === 'freeze' && !state.bonuses.freezeUsed) {
+            state.bonuses.freezeUsed = true;
+            state.status = 'indicator_frozen'; // Pauses movement in gameLoop
+            showBanner("Заморозка!", "correct");
+            
+            // Auto-resume after 10 seconds if STOP wasn't pressed
+            state.freezeTimer = setTimeout(() => {
+                if (state.status === 'indicator_frozen') {
+                    state.status = 'indicator_moving';
+                }
+            }, 10000);
+        }
+        updateUI();
+    }
+
+    // 9. End Game
+    function endGame(isWin) {
+        state.status = isWin ? 'game_win' : 'game_lose';
+        DOM['screen-final'].classList.remove('hidden');
+        DOM['final-title'].textContent = isWin ? 'Победа!' : 'Игра окончена';
+        DOM['final-title'].style.color = isWin ? 'var(--success)' : 'var(--danger)';
+        DOM['final-correct'].textContent = state.correctAnswers;
+        DOM['final-wrong'].textContent = state.wrongAnswers;
+    }
+
+    // Public API
+    return {
+        init,
+        start,
+        restart,
+        handleStop,
+        useBonus,
+        getState: () => ({ ...state })
+    };
+})();
+
+// Auto-init on DOM Load for testing
+document.addEventListener("DOMContentLoaded", () => {
+    MomentOfTruth.init();
+});
 </script>
 </body>
 </html>
