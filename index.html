@@ -3,1716 +3,1824 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Момент истины</title>
+  <title>Moment Of Truth — Improved</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: rgba(15, 23, 42, 0.86);
-      --panel-2: rgba(30, 41, 59, 0.95);
-      --text: #e5eefc;
-      --muted: #94a3b8;
-      --accent: #22c55e;
-      --accent-2: #38bdf8;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-      --correct: #22c55e;
-      --wrong: #ef4444;
-      --track: #334155;
-      --track-fill: linear-gradient(90deg, #38bdf8 0%, #22c55e 100%);
-      --segment-border: rgba(255,255,255,.14);
-      --shadow: 0 16px 40px rgba(2, 8, 23, 0.45);
-      --radius-xl: 24px;
-      --radius-lg: 18px;
-      --radius-md: 14px;
-      --radius-sm: 10px;
-      --button-text: #08111f;
-      --font: Inter, Arial, Helvetica, sans-serif;
-    }
-
-    * { box-sizing: border-box; }
-    html, body {
-      margin: 0;
-      padding: 0;
-      background:
-        background:
-  radial-gradient(circle at 12% 10%, rgba(56,189,248,.18), transparent 28%),
-  radial-gradient(circle at 88% 14%, rgba(34,197,94,.16), transparent 24%),
-  radial-gradient(circle at 50% 90%, rgba(56,189,248,.08), transparent 40%),
-  linear-gradient(180deg,#060b18 0%,#0b1120 40%,#0f172a 100%);
-      color: var(--text);
-      font-family: var(--font);
-      min-height: 100%;
+:root {
+      --mot-bg: #05070a;
+      --mot-panel: rgba(11, 17, 32, 0.85); 
+      --mot-panel-2: rgba(31, 41, 55, 0.4);
+      --mot-text: #f8fafc;
+      --mot-muted: #94a3b8;
+      --mot-accent: #00f2ff; /* Электрический голубой */
+      --mot-accent-2: #7000ff; /* Фиолетовый неон */
+      --mot-danger: #ff4646;
+      --mot-warning: #f59e0b;
+      --mot-correct: #00ff88;
+      --mot-wrong: #ff3e3e;
+      --mot-border: rgba(255, 255, 255, 0.1);
+      --mot-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      --mot-radius: 24px;
+      --mot-font: 'Inter', system-ui, -apple-system, sans-serif;
+      --glass-blur: blur(15px);
     }
 
     body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--mot-font);
+      background: var(--mot-bg);
+      /* Создаем эффект глубокого космоса */
+      background: radial-gradient(circle at 50% 50%, #111827 0%, #05070a 100%);
+      color: var(--mot-text);
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 22px;
-    }
-
-    .game-shell {
-      width: min(1120px, 100%);
-      display: grid;
-      gap: 18px;
-    }
-
-    .topbar {
-      display: grid;
-      grid-template-columns: 1.25fr .95fr .8fr;
-      gap: 16px;
-      align-items: stretch;
-    }
-
-.card {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)),
-    var(--panel);
-  border: 1px solid rgba(255,255,255,.08);
-  border-radius: var(--radius-xl);
-  box-shadow:
-    var(--shadow),
-    inset 0 1px 0 rgba(255,255,255,.05);
-  backdrop-filter: blur(14px);
-}
-
-    .question-card {
-      padding: 20px 22px;
-    }
-
-    .question-meta {
-      display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      color: var(--muted);
-      font-size: 14px;
+      min-height: 100vh;
+      overflow: hidden;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 13px;
-      font-weight: 700;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
+    /* Добавляем мягкое свечение по бокам экрана */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 15% 20%, rgba(0, 242, 255, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 80%, rgba(112, 0, 255, 0.08) 0%, transparent 40%);
+      z-index: -1;
     }
 
-    .question-text {
-      font-size: clamp(22px, 2.8vw, 34px);
-      line-height: 1.18;
-      font-weight: 800;
-      margin: 0;
+    .mot-root {
+      width: 100vw;
+      height: 100vh;
+      max-width: 100vw;
+      max-height: 100vh;
+      color: var(--mot-text);
+      background:
+        radial-gradient(circle at top right, rgba(56,189,248,0.18), transparent 25%),
+        radial-gradient(circle at left bottom, rgba(34,197,94,0.16), transparent 30%),
+        linear-gradient(180deg, #0b1220 0%, #0f172a 100%);
+      overflow: hidden;
+      position: relative;
+      isolation: isolate;
     }
 
-    .status-card,
-    .bonus-card {
-      padding: 16px 18px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      font-weight: 700;
-    }
-
-    .lives {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .life {
-      width: 38px;
-      height: 38px;
+    .mot-shell {
       display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-      font-size: 22px;
-      transition: transform .18s ease, opacity .18s ease, filter .18s ease;
+      grid-template-rows: auto auto 1fr;
+      gap: 14px;
+      padding: 18px;
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
     }
 
-    .life.off {
-      opacity: .28;
-      transform: scale(.88);
-      filter: grayscale(1);
+    .mot-panel {
+      background: rgba(17,24,39,0.82);
+      border: 1px solid var(--mot-border);
+      border-radius: var(--mot-radius);
+      box-shadow: var(--mot-shadow);
+      backdrop-filter: blur(8px);
+      min-height: 0;
     }
 
-    .stats-grid {
+    .mot-hud {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(8, minmax(0, 1fr));
       gap: 10px;
-    }
-
-    .stat-box {
       padding: 12px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.06);
-      border-radius: 14px;
-      text-align: center;
+      font-size: var(--mot-hud-font-size);
+      flex-shrink: 0;
     }
 
-    .stat-box strong {
-      display: block;
-      font-size: 22px;
+    .mot-stat {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-width: 0;
+      transition: transform var(--mot-anim-fast) ease, border-color var(--mot-anim-fast) ease, box-shadow var(--mot-anim-fast) ease;
+    }
+
+    .mot-stat--highlight {
+      border-color: rgba(56,189,248,0.32);
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.07);
+    }
+
+    .mot-stat--danger {
+      border-color: rgba(239,68,68,0.45);
+      box-shadow: 0 0 0 4px rgba(239,68,68,0.10), 0 0 24px rgba(239,68,68,0.08);
+      animation: motDangerPulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes motDangerPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .mot-stat__label {
+      color: var(--mot-muted);
+      font-size: 12px;
       margin-bottom: 4px;
     }
 
-    .bonus-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .mot-stat__value {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    button {
-      border: none;
-      cursor: pointer;
-      font: inherit;
+    .mot-score-counting {
+      color: #fde68a;
+      text-shadow: 0 0 14px rgba(245,158,11,0.24);
     }
 
-    .bonus-btn,
-    .ghost-btn,
-    .primary-btn,
-    .stop-btn {
-      border-radius: 16px;
-      font-weight: 800;
-      transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease, background .15s ease;
-    }
-
-    .bonus-btn:hover,
-    .ghost-btn:hover,
-    .primary-btn:hover,
-    .stop-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .bonus-btn:disabled,
-    .ghost-btn:disabled,
-    .primary-btn:disabled,
-    .stop-btn:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .bonus-btn {
-      padding: 12px 10px;
-      color: var(--text);
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.1);
-    }
-
-    .bonus-btn.enabled {
-      background: linear-gradient(135deg, rgba(56,189,248,.24), rgba(34,197,94,.22));
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
-    }
-
-    .board {
-      padding: 18px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .track-wrap {
-      padding: 18px;
-      background: rgba(255,255,255,.035);
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.06);
-    }
-
-    .track-head {
+    .mot-progress { padding: 14px 16px 18px; flex-shrink: 0; }
+    .mot-progress__header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 12px;
     }
+    .mot-progress__title { font-weight: 700; font-size: 15px; }
+    .mot-progress__meta { color: var(--mot-muted); font-size: 13px; }
 
-    .track {
+    .mot-track {
       position: relative;
-      padding: 26px 14px 10px;
-    }
-
-    .track-line {
-      position: absolute;
-      inset: 34px 12px auto 12px;
-      height: 8px;
+      height: 42px;
       border-radius: 999px;
-      background: linear-gradient(90deg, rgba(255,255,255,.08), rgba(255,255,255,.18));
-    }
-
-    .track-steps {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .track-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      min-width: 22px;
-      flex: 1;
-    }
-
-    .track-step .dot {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      background: #1e293b;
-      border: 2px solid rgba(255,255,255,.18);
-      position: relative;
-      z-index: 1;
-      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
-    }
-
-    .track-step.done .dot {
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(34,197,94,.12);
-    }
-
-    .track-step .step-label {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .player-token {
-      position: absolute;
-      top: 0;
-      left: 12px;
-      transform: translateX(-50%);
-      width: 44px;
-      height: 44px;
-      border-radius: 999px;
-      display: grid;
-      place-items: center;
-      font-size: 24px;
-      background: radial-gradient(circle at 30% 30%, #fff 0%, #dbeafe 28%, #38bdf8 68%, #0ea5e9 100%);
-      color: #082032;
-      box-shadow: 0 8px 18px rgba(14,165,233,.45);
-      transition: left .35s cubic-bezier(.22,.61,.36,1);
-      z-index: 2;
-      overflow: hidden;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .arena-wrap {
-      display: grid;
-      gap: 16px;
-    }
-
-.arena {
-  position: relative;
-  background:
-    radial-gradient(circle at center, rgba(56,189,248,.08), transparent 70%),
-    var(--panel-2);
- box-shadow:
-  inset 0 0 0 1px rgba(255,255,255,.04),
-  0 0 40px rgba(56,189,248,.08);
-      border-radius: 24px;
-      border: 1px solid rgba(255,255,255,.08);
-      padding: 22px 20px 24px;
-      min-height: 320px;
-      overflow: hidden;
-    }
-
-    .arena.glow-correct {
-      box-shadow: inset 0 0 0 2px rgba(34,197,94,.45), 0 0 0 8px rgba(34,197,94,.08);
-    }
-
-    .arena.glow-wrong {
-      box-shadow: inset 0 0 0 2px rgba(239,68,68,.45), 0 0 0 8px rgba(239,68,68,.08);
-    }
-
-    .horizontal-zone,
-    .vertical-zone {
-      position: relative;
-      width: 100%;
-      display: flex;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-      overflow: hidden;
-    }
-
-    .horizontal-zone {
-      height: 120px;
-      border-radius: 28px;
-      margin-top: 52px;
-      flex-direction: row;
-    }
-
-    .vertical-zone {
-      width: min(320px, 100%);
-      height: 250px;
-      margin: 14px auto 0;
-      border-radius: 28px;
-      flex-direction: column;
-    }
-
-    .segment {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 12px;
-      font-weight: 700;
-      line-height: 1.2;
-      border-right: 1px solid var(--segment-border);
-      border-bottom: 1px solid transparent;
-      transition: background .2s ease, transform .2s ease;
-      user-select: none;
-      overflow-wrap: anywhere;
-      font-size: clamp(14px, 1.6vw, 18px);
       background:
-  linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-.segment:hover{
-  transform: scale(1.02);
-}
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        linear-gradient(90deg, #0f172a, #172033);
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
     }
-
-    .vertical-zone .segment {
-      border-right: none;
-      border-bottom: 1px solid var(--segment-border);
-      min-height: 0;
-      flex: 1;
+    .mot-track__fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(34,197,94,0.45), rgba(56,189,248,0.45));
+      transition: width var(--mot-anim-slow) ease;
+      z-index: 1;
     }
-
-    .segment:last-child { border-right: none; }
-    .vertical-zone .segment:last-child { border-bottom: none; }
-
-    .segment.hidden-by-5050 {
-      opacity: .18;
-      filter: grayscale(1);
-    }
-
-    .segment.selected {
-      background: rgba(56,189,248,.18);
-    }
-
-    .segment.correct {
-      background: rgba(34,197,94,.28);
-    }
-
-    .segment.wrong {
-      background: rgba(239,68,68,.24);
-    }
-
-    .indicator-layer {
+    .mot-track__ticks {
       position: absolute;
       inset: 0;
+      display: grid;
+      z-index: 2;
       pointer-events: none;
     }
-
-    .indicator {
+    .mot-track__tick { border-right: 1px solid rgba(255,255,255,0.06); }
+    .mot-track__tick:last-child { border-right: none; }
+    .mot-track__runner {
       position: absolute;
-      transition: transform .06s linear, left .06s linear, top .06s linear;
-      will-change: left, top, transform;
-      z-index: 3;
+      top: 50%;
+      left: 0%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
       display: grid;
       place-items: center;
-    }
-
-    .indicator.arrow::before {
-      content: "▼";
-      font-size: 38px;
+      font-size: 28px;
       line-height: 1;
-      text-shadow: 0 6px 10px rgba(0,0,0,.35);
-      color: #f8fafc;
+      transition: left var(--mot-anim-slow) ease;
+      pointer-events: none;
+      z-index: 4;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,0.28));
+    }
+    .mot-track__finish {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      z-index: 3;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
     }
 
-    .indicator.line {
-      width: 6px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #fff, #38bdf8);
-      box-shadow: 0 0 12px rgba(56,189,248,.55);
+    .mot-main {
+      display: grid;
+      grid-template-rows: auto auto auto auto auto;
+      gap: 14px;
+      padding: 16px;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      align-content: start;
     }
 
-    .indicator.ball {
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #fff, #fde68a 28%, #f59e0b 100%);
-      box-shadow: 0 8px 18px rgba(245,158,11,.5);
-    }
-
-    .indicator.custom {
-      width: 42px;
-      height: 42px;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
-
-    .arc-zone-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 340px;
-      margin-top: 8px;
-    }
-
-    svg.arc-svg {
-      width: min(760px, 100%);
-      height: auto;
-      overflow: visible;
-    }
-
-    .arc-segment-path {
-      fill: rgba(255,255,255,.07);
-      stroke: rgba(255,255,255,.12);
-      stroke-width: 2;
-      transition: fill .2s ease, opacity .2s ease;
-    }
-
-    .arc-segment-path.correct { fill: rgba(34,197,94,.30); }
-    .arc-segment-path.wrong { fill: rgba(239,68,68,.28); }
-    .arc-segment-path.selected { fill: rgba(56,189,248,.18); }
-    .arc-segment-path.hidden-by-5050 { opacity: .18; }
-
-    .arc-label {
-      font-size: 15px;
+    .mot-question {
+      padding: 18px;
+      line-height: 1.35;
+      font-size: var(--mot-question-font-size);
       font-weight: 700;
-      fill: #e5eefc;
-      text-anchor: middle;
-      dominant-baseline: middle;
+      text-align: center;
+      min-height: 98px;
+      height: 120px;
+      max-height: 120px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .mot-question--boss::after,
+    .mot-question--speed::after,
+    .mot-question--safe::after,
+    .mot-question--double::after {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+    }
+    .mot-question--boss::after { content: 'BOSS'; color: #fca5a5; }
+    .mot-question--speed::after { content: 'SPEED'; color: #fde68a; }
+    .mot-question--safe::after { content: 'SAFE'; color: #bfdbfe; }
+    .mot-question--double::after { content: 'x2 STEP'; color: #bbf7d0; }
+
+    .mot-question__inner {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .mot-rail-wrap { position: relative; padding: 12px 16px 0; flex-shrink: 0; }
+    .mot-rail-frame { position: relative; height: 84px; display: flex; align-items: center; }
+    .mot-rail {
+      position: relative;
+      width: 100%;
+      height: var(--mot-rail-height);
+      border-radius: 999px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03)),
+        linear-gradient(90deg, #1f2937, #334155);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+    .mot-rail__segments {
+      position: absolute;
+      inset: 0;
+      display: grid;
       pointer-events: none;
     }
+    .mot-rail__segment { border-right: 1px solid rgba(255,255,255,0.05); opacity: 0.18; position: relative; }
+    .mot-rail__segment:last-child { border-right: none; }
+    .mot-rail--hide-borders .mot-rail__segment { border-right-color: transparent; }
+    .mot-rail__segment--correct { background: rgba(34,197,94,0.35); opacity: 1; }
+    .mot-rail__segment--wrong { background: rgba(239,68,68,0.35); opacity: 1; }
+    
 
-    .controls {
+    .mot-indicator {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: var(--mot-indicator-size);
+      height: var(--mot-indicator-size);
+      transform: translate(-50%, -50%);
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      gap: 16px;
+      place-items: center;
+      font-size: 30px;
+      line-height: 1;
+      transition: filter var(--mot-anim-fast) ease, transform var(--mot-anim-fast) ease;
+      z-index: 6;
+      pointer-events: none;
+      will-change: left;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.28));
     }
 
-    .message-box {
-      min-height: 64px;
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.045);
-      border: 1px solid rgba(255,255,255,.08);
-      display: flex;
-      align-items: center;
-      font-size: 16px;
-      color: var(--text);
+    .mot-indicator__inner {
+      transform-origin: center;
+      animation: motRunBob 0.6s ease-in-out infinite;
     }
 
-    .message-box strong { color: white; }
+    .mot-indicator--frozen {
+      filter: drop-shadow(0 0 12px rgba(56,189,248,0.75)) drop-shadow(0 0 28px rgba(56,189,248,0.35));
+      transform: translate(-50%, -50%) scale(1.06);
+    }
+    .mot-indicator--frozen .mot-indicator__inner { animation: none; }
 
-    .stop-wrap {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    @keyframes motRunBob {
+      0%, 100% { transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-2px) rotate(2deg); }
     }
 
-    .stop-btn {
-      width: 132px;
-      height: 132px;
-      border-radius: 999px;
-      color: white;
-      font-size: 26px;
-      letter-spacing: .06em;
-      background: radial-gradient(circle at 30% 30%, #fb7185 0%, #ef4444 50%, #b91c1c 100%);
-      box-shadow: 0 18px 30px rgba(239,68,68,.35), inset 0 4px 12px rgba(255,255,255,.25);
-      .segment:hover{
-  transform: scale(1.02);
-}
-      box-shadow:
-  0 18px 30px rgba(239,68,68,.35),
-  0 0 30px rgba(239,68,68,.25),
-  inset 0 4px 12px rgba(255,255,255,.25);
+    .mot-answer-band-wrap { padding: 0 16px 12px; flex-shrink: 0; }
+    .mot-answer-band {
+      position: relative;
+      height: var(--mot-band-height);
+      min-height: var(--mot-band-height);
+      max-height: var(--mot-band-height);
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03)),
+        linear-gradient(180deg, #0f172a, #172033);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
     }
-.stop-btn:hover{
-  transform: scale(1.05);
-}
-    .stop-btn.small-cooldown {
-      animation: pulse 1s infinite;
-    }
-
-    .hint-box {
-      min-height: 64px;
+    .mot-answer-band__cell {
       padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.045);
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      font-size: var(--mot-answer-font-size);
+      font-weight: 600;
+      line-height: 1.25;
+      transition: opacity var(--mot-anim-mid) ease, background var(--mot-anim-mid) ease, color var(--mot-anim-mid) ease, transform var(--mot-anim-fast) ease;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      overflow: hidden;
+      min-width: 0;
+    }
+    .mot-answer-band__cell:last-child { border-right: none; }
+    .mot-answer-band--hide-borders .mot-answer-band__cell { border-right-color: transparent; }
+    .mot-answer-band__cell--hidden { opacity: 0.12; color: transparent; text-shadow: none; }
+    .mot-answer-band__cell--correct { background: rgba(22,163,74,0.24); }
+    .mot-answer-band__cell--wrong { background: rgba(220,38,38,0.24); }
+    .mot-answer-band__cell--perfect {
+      background: linear-gradient(180deg, rgba(250,204,21,0.30), rgba(250,204,21,0.18));
+      box-shadow: inset 0 0 0 1px rgba(250,204,21,0.24);
     }
 
-    .combo-badge {
+    .mot-controls-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: start;
+      margin-top: 8px;
+      min-height: 56px;
+      flex-shrink: 0;
+    }
+
+    .mot-bonuses { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; min-height: 48px; }
+    .mot-energy {
+      min-width: 220px;
+      display: grid;
+      gap: 6px;
+      align-self: center;
+    }
+    .mot-energy__meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--mot-muted);
+    }
+    .mot-energy__bar {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .mot-energy__fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(56,189,248,0.75), rgba(34,197,94,0.75));
+      transition: width var(--mot-anim-mid) ease;
+    }
+
+    .mot-btn {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      color: var(--mot-text);
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform var(--mot-anim-fast) ease, opacity var(--mot-anim-fast) ease, border-color var(--mot-anim-fast) ease, box-shadow var(--mot-anim-fast) ease;
+      min-height: 48px;
+    }
+    .mot-btn:hover:not(:disabled) { transform: translateY(-1px); border-color: rgba(255,255,255,0.22); }
+    .mot-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .mot-btn--stop {
+      min-width: 180px;
+      background: linear-gradient(180deg, rgba(239,68,68,0.22), rgba(220,38,38,0.18));
+      border-color: rgba(239,68,68,0.28);
+      font-size: 18px;
+      letter-spacing: 0.04em;
+    }
+    .mot-btn--bonus { font-size: 14px; }
+    .mot-btn--bonus-ready {
+      border-color: rgba(56,189,248,0.44);
+      box-shadow: 0 0 0 4px rgba(56,189,248,0.10);
+    }
+    .mot-btn--freeze-active {
+      border-color: rgba(56,189,248,0.8);
+      box-shadow: 0 0 0 4px rgba(56,189,248,0.20), 0 0 20px rgba(56,189,248,0.20);
+      background: linear-gradient(180deg, rgba(56,189,248,0.24), rgba(2,132,199,0.16));
+    }
+
+    .mot-feedback {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 0 4px 2px;
+      min-height: 58px;
+      height: 58px;
+      max-height: 58px;
+      flex-shrink: 0;
+    }
+    .mot-banner {
+      height: 58px;
+      min-height: 58px;
+      max-height: 58px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 15px;
+      transition: opacity var(--mot-anim-mid) ease, transform var(--mot-anim-mid) ease;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .mot-banner--correct { color: #bbf7d0; background: rgba(22,163,74,0.18); border-color: rgba(34,197,94,0.24); }
+    .mot-banner--wrong { color: #fecaca; background: rgba(220,38,38,0.18); border-color: rgba(239,68,68,0.24); }
+    .mot-banner--info { color: #bae6fd; background: rgba(2,132,199,0.14); border-color: rgba(56,189,248,0.22); }
+    .mot-banner--perfect { color: #fde68a; background: rgba(250,204,21,0.16); border-color: rgba(250,204,21,0.28); }
+
+    .mot-timer { min-width: 168px; height: 58px; display: flex; align-items: center; justify-content: flex-end; }
+    .mot-timer__pill {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 14px;
+      min-height: 42px;
+      padding: 0 14px;
       border-radius: 999px;
-      background: linear-gradient(135deg, rgba(245,158,11,.22), rgba(251,191,36,.16));
-      border: 1px solid rgba(251,191,36,.28);
+      font-size: 15px;
       font-weight: 800;
-      color: #fde68a;
-      box-shadow: 0 8px 20px rgba(245,158,11,.12);
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(2,6,23,.72);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 24px;
-      z-index: 10;
-      backdrop-filter: blur(8px);
-    }
-
-    .overlay.open { display: flex; }
-
-    .modal {
-      width: min(680px, 100%);
-      padding: 28px;
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(15,23,42,.96), rgba(30,41,59,.96));
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 30px 70px rgba(0,0,0,.45);
-      text-align: center;
-    }
-
-    .modal h2 {
-      margin: 0 0 10px;
-      font-size: clamp(28px, 3vw, 40px);
-    }
-
-    .modal p {
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.5;
-      margin: 8px 0;
-    }
-
-    .result-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 22px 0;
-    }
-
-    .result-item {
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .result-item strong {
-      display: block;
-      font-size: 28px;
-      margin-bottom: 6px;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-
-    .primary-btn, .ghost-btn {
-      padding: 14px 18px;
-      min-width: 180px;
-      border-radius: 16px;
-      font-weight: 800;
-    }
-
-    .primary-btn {
-      color: var(--button-text);
-      background: linear-gradient(135deg, #38bdf8, #22c55e);
-      box-shadow: 0 16px 24px rgba(34,197,94,.16);
-    }
-
-    .ghost-btn {
-      color: var(--text);
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.09);
-    }
-
-    .countdown {
-      color: #fde68a;
-      font-weight: 800;
-    }
-
-    .confetti {
-      position: fixed;
-      inset: 0;
+      color: #e0f2fe;
+      background: rgba(56,189,248,0.16);
+      border: 1px solid rgba(56,189,248,0.34);
+      box-shadow: 0 0 0 0 rgba(56,189,248,0.3);
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity var(--mot-anim-fast) ease, transform var(--mot-anim-fast) ease;
       pointer-events: none;
-      overflow: hidden;
-      z-index: 11;
+    }
+    .mot-timer__pill--visible {
+      opacity: 1;
+      transform: scale(1);
+      animation: motFreezePulse 1s ease-in-out infinite;
+    }
+    @keyframes motFreezePulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(56,189,248,0.22); }
+      50% { box-shadow: 0 0 0 8px rgba(56,189,248,0.06); }
     }
 
-    .confetti-piece {
+    .mot-toast-layer {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      display: grid;
+      gap: 10px;
+      z-index: 55;
+      pointer-events: none;
+    }
+    .mot-toast {
+      min-width: 220px;
+      max-width: 320px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(15,23,42,0.88);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: var(--mot-shadow);
+      transform: translateY(-8px);
+      opacity: 0;
+      animation: motToastIn 320ms ease forwards;
+    }
+    .mot-toast--achievement { border-color: rgba(250,204,21,0.35); }
+    .mot-toast--perfect { border-color: rgba(56,189,248,0.35); }
+    .mot-toast__title { font-size: 13px; color: var(--mot-muted); margin-bottom: 4px; }
+    .mot-toast__text { font-weight: 800; font-size: 15px; }
+    @keyframes motToastIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .mot-toast--out { animation: motToastOut 260ms ease forwards; }
+    @keyframes motToastOut {
+      to { transform: translateY(-8px); opacity: 0; }
+    }
+
+    .mot-perfect-burst {
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%) scale(0.8);
+      font-size: clamp(28px, 6vw, 56px);
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      color: #fde68a;
+      text-shadow: 0 0 24px rgba(250,204,21,0.28);
+      z-index: 30;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .mot-perfect-burst--show { animation: motPerfectBurst 800ms ease forwards; }
+    @keyframes motPerfectBurst {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.72); }
+      12% { opacity: 1; transform: translate(-50%, -50%) scale(1.08); }
+      75% { opacity: 1; transform: translate(-50%, -52%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -58%) scale(0.95); }
+    }
+
+    .mot-shake { animation: motShake 420ms ease; }
+    @keyframes motShake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-8px); }
+      40% { transform: translateX(7px); }
+      60% { transform: translateX(-5px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .mot-final {
+      position: absolute;
+      inset: 0;
+      z-index: 40;
+      display: none;
+      place-items: center;
+      background: rgba(2,6,23,0.72);
+      backdrop-filter: blur(8px);
+      padding: 20px;
+    }
+    .mot-final--visible { display: grid; }
+    .mot-final__card {
+      width: min(100%, 720px);
+      padding: 26px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, #101827, #172033);
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: var(--mot-shadow);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .mot-final__title { font-size: clamp(26px, 4vw, 40px); font-weight: 800; margin-bottom: 10px; }
+    .mot-final__subtitle { color: var(--mot-muted); margin-bottom: 18px; }
+    .mot-final__stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 20px 0 22px;
+    }
+    .mot-final__stat {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 14px 10px;
+    }
+    .mot-final__stat-value { font-size: 24px; font-weight: 800; margin-bottom: 4px; }
+    .mot-final__stat-label { color: var(--mot-muted); font-size: 13px; }
+    .mot-final__actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    .mot-confetti-layer {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .mot-confetti {
       position: absolute;
       top: -20px;
-      width: 12px;
+      width: 10px;
       height: 18px;
-      opacity: .9;
-      animation: confettiFall linear forwards;
+      border-radius: 2px;
+      opacity: 0.9;
+      animation: motConfettiFall linear forwards;
     }
-
-    @keyframes confettiFall {
+    @keyframes motConfettiFall {
       to {
         transform: translateY(110vh) rotate(720deg);
         opacity: 1;
       }
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.03); }
-      100% { transform: scale(1); }
+    @media (max-width: 980px) {
+      .mot-hud { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .mot-final__stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
-
-    @media (max-width: 960px) {
-      .topbar, .controls { grid-template-columns: 1fr; }
-      .stop-wrap { order: -1; }
-      .status-card, .bonus-card { min-height: auto; }
-      .stats-grid, .result-grid { grid-template-columns: 1fr 1fr 1fr; }
-      .stop-btn { width: 112px; height: 112px; font-size: 22px; }
+    @media (max-width: 820px) {
+      .mot-shell { padding: 12px; gap: 12px; }
+      .mot-hud { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .mot-controls-row { grid-template-columns: 1fr; }
+      .mot-feedback {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 102px;
+        max-height: none;
+      }
+      .mot-banner { white-space: normal; height: auto; min-height: 58px; max-height: none; }
+      .mot-timer { justify-content: flex-start; height: auto; }
+      .mot-final__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
-
-    @media (max-width: 680px) {
-      body { padding: 12px; }
-      .question-card, .status-card, .bonus-card, .board { padding: 16px; }
-      .stats-grid, .result-grid { grid-template-columns: 1fr; }
-      .bonus-row { grid-template-columns: 1fr; }
-      .controls { gap: 12px; }
-      .message-box, .hint-box { min-height: auto; }
-      .stop-btn { width: 100px; height: 100px; font-size: 20px; }
-      .horizontal-zone { height: 112px; }
-      .player-token { width: 38px; height: 38px; font-size: 20px; }
+    @media (max-width: 520px) {
+      .mot-hud { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .mot-question { height: 108px; max-height: 108px; }
+      .mot-answer-band__cell { padding: 10px 8px; font-size: 13px; }
+      .mot-btn--stop { width: 100%; }
+      .mot-energy { min-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <div class="game-shell">
-    <div class="topbar">
-      <section class="card question-card">
-        <div class="question-meta">
-          <span class="badge" id="questionCounter">Вопрос 1</span>
-          <span id="zoneTypeLabel">Шкала: горизонтальная</span>
-        </div>
-        <h1 class="question-text" id="questionText">Загрузка вопроса…</h1>
-      </section>
-
-      <section class="card status-card">
-        <div>
-          <div class="section-title">Жизни</div>
-          <div class="lives" id="livesBox"></div>
-        </div>
-        <div>
-          <div class="section-title" style="margin-bottom:10px;">Статистика</div>
-          <div class="stats-grid">
-            <div class="stat-box"><strong id="correctCount">0</strong><span>Верно</span></div>
-            <div class="stat-box"><strong id="wrongCount">0</strong><span>Ошибки</span></div>
-            <div class="stat-box"><strong id="comboCount">0</strong><span>Серия</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section class="card bonus-card">
-        <div>
-          <div class="section-title">Бонусы</div>
-          <p id="bonusHint" style="margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.4;">
-            Станут доступны после 3 правильных ответов подряд.
-          </p>
-        </div>
-        <div class="bonus-row">
-          <button class="bonus-btn" id="freezeBtn" disabled>❄ Заморозка</button>
-          <button class="bonus-btn" id="fiftyBtn" disabled>½ 50/50</button>
-        </div>
-      </section>
-    </div>
-
-    <section class="card board">
-      <div class="track-wrap">
-        <div class="track-head">
-          <div>
-            <div class="section-title">Прогресс</div>
-            <div style="font-weight:700; margin-top:4px;" id="trackText">0 / 7 шагов</div>
-          </div>
-          <div id="comboBadgeHost"></div>
-        </div>
-        <div class="track" id="track">
-          <div class="track-line"></div>
-          <div class="player-token" id="playerToken">🏃</div>
-          <div class="track-steps" id="trackSteps"></div>
-        </div>
-      </div>
-
-      <div class="arena-wrap">
-        <div class="arena" id="arena">
-          <div class="indicator-layer" id="indicatorLayer"></div>
-          <div id="zoneRoot"></div>
-        </div>
-
-        <div class="controls">
-          <div class="message-box" id="messageBox"><strong>Готово!</strong>&nbsp;Нажми СТОП в зоне правильного ответа.</div>
-          <div class="stop-wrap">
-            <button class="stop-btn" id="stopBtn">СТОП</button>
-          </div>
-          <div class="hint-box" id="hintBox">
-            Индикатор стартует автоматически. До нажатия СТОП должна пройти небольшая задержка.
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-
-  <div class="overlay" id="resultOverlay">
-    <div class="modal">
-      <h2 id="resultTitle">Победа!</h2>
-      <p id="resultText">Фишка добралась до финиша.</p>
-      <div class="result-grid">
-        <div class="result-item"><strong id="resultCorrect">0</strong><span>Правильных</span></div>
-        <div class="result-item"><strong id="resultWrong">0</strong><span>Ошибок</span></div>
-        <div class="result-item"><strong id="resultProgress">0%</strong><span>Прогресс</span></div>
-      </div>
-      <div class="modal-actions">
-        <button class="primary-btn" id="restartBtn">Сыграть ещё раз</button>
-        <button class="ghost-btn" id="exitBtn">Выход</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="confetti" id="confetti"></div>
+  <div id="moment-of-truth-root"></div>
 
   <script>
-    const GAME_CONFIG = {
-      editorReady: {
-        notes: 'Все основные параметры вынесены в конфиг, чтобы потом подключить редактор без переписывания механики.'
-      },
-      ui: {
-        language: 'ru',
-        zoneShape: 'horizontal', // horizontal | vertical | arc
-        lifeStyle: 'hearts', // hearts | batteries | crystals | customText
-        lifeCustomText: '★',
-        indicatorType: 'arrow', // arrow | line | ball | custom
-        indicatorCustomImage: '',
-        playerTokenType: 'emoji', // emoji | image
-        playerTokenEmoji: '🏃',
-        playerTokenImage: '',
-        colors: {
-          accent: '#22c55e',
-          accent2: '#38bdf8',
-          danger: '#ef4444',
-          warning: '#f59e0b'
+    (function () {
+      'use strict';
+
+      const DEFAULT_CONFIG = {
+        content: { title: 'Moment Of Truth' },
+        gameplay: {
+          lives: 3,
+          stepsToFinish: 5,
+          continueMode: 'auto',
+          maxAnswerLength: 40,
+          safeRoundNoLifeLoss: true,
+          lastChanceLivesThreshold: 1,
+          resultDelayMs: 1700,
+          scoreCountDurationMs: 1200
+        },
+        movement: {
+          shapeType: 'horizontal',
+          movementType: 'pingpong',
+          minStopDelayMs: 800,
+          defaultSpeed: 300,
+          indicatorType: 'runner'
+        },
+        progress: {
+          playerToken: '🏃',
+          playerTokenImage: '',
+          finishIcon: '🏁'
+        },
+        ui: {
+          lifeDisplay: 'hearts',
+          showAccuracy: true,
+          showCombo: true,
+          showSegmentBorders: false,
+          unifiedRail: true,
+          answerStyle: 'band',
+          lockIndicatorOnWrong: true,
+          autoNextDelayMs: 1700
+        },
+        scoring: {
+          baseCorrect: 100,
+          comboStep: 50,
+          comboCap: 5,
+          perfectBonus: 100,
+          speedRoundMultiplier: 1.5,
+          bossRoundMultiplier: 2,
+          doubleStepBonus: 50
+        },
+        bonuses: {
+          freezeDurationMs: 10000,
+          energyEnabled: true,
+          energyMax: 100,
+          freezeCost: 100,
+          fiftyCost: 60,
+          energyGainCorrect: 30,
+          energyGainPerfect: 20,
+          energyLossWrong: 20
+        },
+        perfect: {
+          enabled: true,
+          thresholdRatio: 0.12,
+          text: 'PERFECT!'
+        },
+        achievements: {
+          enabled: true,
+          list: [
+            { id: 'combo3', check: 'combo3', title: 'Ачивка', text: 'Серия 3 подряд' },
+            { id: 'combo5', check: 'combo5', title: 'Ачивка', text: 'Серия 5 подряд' },
+            { id: 'perfect3', check: 'perfect3', title: 'Снайпер', text: '3 Perfect подряд' },
+            { id: 'survivor', check: 'survivor', title: 'Спасение', text: 'Победа с 1 жизнью' },
+            { id: 'cool', check: 'cool', title: 'Хладнокровие', text: 'Победа без Freeze' }
+          ]
+        },
+        audio: {
+          enabled: true,
+          volume: 0.05,
+          scoreTickIntervalMs: 40
         },
         messages: {
-          correct: ['Верно', 'Отлично', 'Так держать'],
-          wrong: ['Немного не так', 'Попробуем дальше', 'Не сдавайся'],
+          correct: ['Верно!', 'Отлично!', 'Так держать!'],
+          wrong: ['Немного не так.', 'Попробуем дальше.', 'Не сдавайся!'],
           combo: {
-            2: 'Отлично',
-            3: 'Серия',
-            5: 'Мастер'
+            2: 'Отлично! Комбо x2',
+            3: 'Серия x3!',
+            5: 'Мастер! Комбо x5'
           },
-          freeze: 'Думай скорее!',
-          finishWin: 'Фишка добралась до финиша.',
-          finishLose: 'Жизни закончились, но ты можешь попробовать снова.'
-        }
-      },
-      gameplay: {
-        lives: 3,
-        stepsToFinish: 7,
-        bonusEnabled: true,
-        bonusUnlockCombo: 3,
-        freezeDurationSec: 10,
-        movementType: 'pingpong', // pingpong | cyclic
-        speedPxPerSecond: 420,
-        minStopDelayMs: 700,
-        questionAutoNextDelayMs: 1500,
-        individualQuestionSpeed: true,
-        shuffleQuestions: false,
-        questionOrder: 'as_is' // as_is | shuffle
-      },
-      questions: [
+          perfect: ['Идеально!', 'Точное попадание!', 'Perfect!'],
+          lastChance: 'Последний шанс!'
+        },
+        debug: false
+      };
+
+      const DEFAULT_QUESTIONS = [
         {
-          question: 'Столица Франции',
-          answers: ['Лион', 'Париж', 'Марсель', 'Ницца'],
+          id: 'question_1',
+          question: 'Какое число является простым?',
+          answers: ['9', '11', '15'],
           correct_index: 1,
-          speedPxPerSecond: 420,
-          zoneShape: 'horizontal'
+          speed: 340,
+          mode: 'normal'
         },
         {
-          question: 'Сколько будет 9 × 6?',
-          answers: ['42', '56', '54'],
-          correct_index: 2,
-          speedPxPerSecond: 500,
-          zoneShape: 'vertical'
-        },
-        {
-          question: 'Какой газ нужен растениям для фотосинтеза?',
-          answers: ['Кислород', 'Углекислый газ', 'Азот', 'Водород'],
+          id: 'question_2',
+          question: 'Какая планета известна как Красная планета?',
+          answers: ['Венера', 'Марс', 'Сатурн'],
           correct_index: 1,
-          speedPxPerSecond: 430,
-          zoneShape: 'arc'
+          speed: 360,
+          mode: 'speed'
         },
         {
-          question: 'Сколько материков на Земле?',
-          answers: ['5', '6', '7', '8'],
-          correct_index: 1,
-          speedPxPerSecond: 470,
-          zoneShape: 'horizontal'
-        },
-        {
-          question: 'Какая планета ближе всего к Солнцу?',
-          answers: ['Венера', 'Марс', 'Меркурий', 'Сатурн'],
-          correct_index: 2,
-          speedPxPerSecond: 520,
-          zoneShape: 'arc'
-        },
-        {
-          question: 'Синоним слова «смелый»',
-          answers: ['Храбрый', 'Тихий', 'Слабый', 'Медленный'],
+          id: 'question_3',
+          question: 'Сколько будет 6 × 7?',
+          answers: ['42', '36', '48'],
           correct_index: 0,
-          speedPxPerSecond: 440,
-          zoneShape: 'vertical'
+          speed: 300,
+          mode: 'safe'
+        },
+        {
+          id: 'question_4',
+          question: 'Какой океан самый большой?',
+          answers: ['Атлантический', 'Индийский', 'Тихий'],
+          correct_index: 2,
+          speed: 320,
+          mode: 'double_step'
+        },
+        {
+          id: 'question_5',
+          question: 'Какой газ растения поглощают из воздуха?',
+          answers: ['Кислород', 'Углекислый газ', 'Азот'],
+          correct_index: 1,
+          speed: 390,
+          mode: 'boss'
         }
-      ]
-    };
+      ];
 
-    const state = {
-      questions: [],
-      currentIndex: 0,
-      lives: 0,
-      stepsDone: 0,
-      correctAnswers: 0,
-      wrongAnswers: 0,
-      combo: 0,
-      gameOver: false,
-      motion: {
-        requestId: null,
-        running: false,
-        frozen: false,
-        canStop: false,
-        startedAt: 0,
-        lastTs: 0,
-        pos: 0,
-        direction: 1,
-        min: 0,
-        max: 0,
-        speed: 420,
-        axis: 'x',
-        hiddenIndices: [],
-        availableIndices: [],
-        visibleSegments: []
-      },
-      bonuses: {
-        freezeUsed: false,
-        fiftyUsed: false,
-        freezeActive: false,
-        fiftyActive: false,
-        freezeCountdownTimer: null
+      function deepMerge(target, source) {
+        const output = Array.isArray(target) ? target.slice() : { ...target };
+        if (!source || typeof source !== 'object') return output;
+        Object.keys(source).forEach((key) => {
+          const value = source[key];
+          if (Array.isArray(value)) output[key] = value.slice();
+          else if (value && typeof value === 'object') {
+            output[key] = deepMerge(output[key] && typeof output[key] === 'object' ? output[key] : {}, value);
+          } else output[key] = value;
+        });
+        return output;
       }
-    };
+      const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+      const percent = (value, total) => total ? Math.round((value / total) * 100) : 0;
+      const randomFrom = (arr) => arr[Math.floor(Math.random() * arr.length)];
+      const truncateText = (text, maxLength) => typeof text !== 'string' ? '' : (text.length > maxLength ? text.slice(0, maxLength - 1) + '…' : text);
 
-    const els = {
-      questionCounter: document.getElementById('questionCounter'),
-      zoneTypeLabel: document.getElementById('zoneTypeLabel'),
-      questionText: document.getElementById('questionText'),
-      livesBox: document.getElementById('livesBox'),
-      correctCount: document.getElementById('correctCount'),
-      wrongCount: document.getElementById('wrongCount'),
-      comboCount: document.getElementById('comboCount'),
-      bonusHint: document.getElementById('bonusHint'),
-      freezeBtn: document.getElementById('freezeBtn'),
-      fiftyBtn: document.getElementById('fiftyBtn'),
-      trackText: document.getElementById('trackText'),
-      comboBadgeHost: document.getElementById('comboBadgeHost'),
-      trackSteps: document.getElementById('trackSteps'),
-      playerToken: document.getElementById('playerToken'),
-      arena: document.getElementById('arena'),
-      indicatorLayer: document.getElementById('indicatorLayer'),
-      zoneRoot: document.getElementById('zoneRoot'),
-      messageBox: document.getElementById('messageBox'),
-      hintBox: document.getElementById('hintBox'),
-      stopBtn: document.getElementById('stopBtn'),
-      resultOverlay: document.getElementById('resultOverlay'),
-      resultTitle: document.getElementById('resultTitle'),
-      resultText: document.getElementById('resultText'),
-      resultCorrect: document.getElementById('resultCorrect'),
-      resultWrong: document.getElementById('resultWrong'),
-      resultProgress: document.getElementById('resultProgress'),
-      restartBtn: document.getElementById('restartBtn'),
-      exitBtn: document.getElementById('exitBtn'),
-      confetti: document.getElementById('confetti')
-    };
-
-    function applyThemeFromConfig() {
-      const root = document.documentElement;
-      const { colors } = GAME_CONFIG.ui;
-      root.style.setProperty('--accent', colors.accent);
-      root.style.setProperty('--accent-2', colors.accent2);
-      root.style.setProperty('--danger', colors.danger);
-      root.style.setProperty('--warning', colors.warning);
-    }
-
-    function prepareQuestions() {
-      const questions = GAME_CONFIG.questions.map((q, i) => ({ ...q, originalIndex: i }));
-      if (GAME_CONFIG.gameplay.shuffleQuestions || GAME_CONFIG.gameplay.questionOrder === 'shuffle') {
-        shuffleArray(questions);
-      }
-      state.questions = questions;
-    }
-
-    function resetState() {
-      state.currentIndex = 0;
-      state.lives = GAME_CONFIG.gameplay.lives;
-      state.stepsDone = 0;
-      state.correctAnswers = 0;
-      state.wrongAnswers = 0;
-      state.combo = 0;
-      state.gameOver = false;
-      state.motion = {
-        requestId: null,
-        running: false,
-        frozen: false,
-        canStop: false,
-        startedAt: 0,
-        lastTs: 0,
-        pos: 0,
-        direction: 1,
-        min: 0,
-        max: 0,
-        speed: GAME_CONFIG.gameplay.speedPxPerSecond,
-        axis: 'x',
-        hiddenIndices: [],
-        availableIndices: [],
-        visibleSegments: []
-      };
-      state.bonuses = {
-        freezeUsed: false,
-        fiftyUsed: false,
-        freezeActive: false,
-        fiftyActive: false,
-        freezeCountdownTimer: null
-      };
-      stopMotion();
-      clearFreezeTimer();
-    }
-
-    function initGame() {
-      applyThemeFromConfig();
-      prepareQuestions();
-      resetState();
-      renderTrack();
-      updateHUD();
-      renderCurrentQuestion();
-      els.resultOverlay.classList.remove('open');
-      els.confetti.innerHTML = '';
-    }
-
-    function renderTrack() {
-      els.trackSteps.innerHTML = '';
-      const total = GAME_CONFIG.gameplay.stepsToFinish;
-      for (let i = 0; i <= total; i++) {
-        const step = document.createElement('div');
-        step.className = 'track-step';
-        if (i <= state.stepsDone) step.classList.add('done');
-        step.innerHTML = `<div class="dot"></div><div class="step-label">${i === 0 ? 'Старт' : i === total ? 'Финиш' : i}</div>`;
-        els.trackSteps.appendChild(step);
-      }
-      updatePlayerToken();
-    }
-
-    function updatePlayerToken() {
-      const total = GAME_CONFIG.gameplay.stepsToFinish;
-      const percent = total === 0 ? 0 : (state.stepsDone / total) * 100;
-      els.playerToken.style.left = `calc(12px + ${percent}% - ${percent * 0.24}px)`;
-
-      if (GAME_CONFIG.ui.playerTokenType === 'image' && GAME_CONFIG.ui.playerTokenImage) {
-        els.playerToken.textContent = '';
-        els.playerToken.style.backgroundImage = `url('${GAME_CONFIG.ui.playerTokenImage}')`;
-      } else {
-        els.playerToken.style.backgroundImage = 'none';
-        els.playerToken.textContent = GAME_CONFIG.ui.playerTokenEmoji || '🏃';
-      }
-    }
-
-    function updateHUD() {
-      renderLives();
-      els.correctCount.textContent = state.correctAnswers;
-      els.wrongCount.textContent = state.wrongAnswers;
-      els.comboCount.textContent = state.combo;
-      els.trackText.textContent = `${state.stepsDone} / ${GAME_CONFIG.gameplay.stepsToFinish} шагов`;
-      renderComboBadge();
-      updateBonusButtons();
-      renderTrack();
-    }
-
-    function renderLives() {
-      els.livesBox.innerHTML = '';
-      const maxLives = GAME_CONFIG.gameplay.lives;
-      for (let i = 0; i < maxLives; i++) {
-        const span = document.createElement('span');
-        span.className = 'life' + (i >= state.lives ? ' off' : '');
-        span.textContent = getLifeIcon();
-        els.livesBox.appendChild(span);
-      }
-    }
-
-    function getLifeIcon() {
-      const map = {
-        hearts: '❤',
-        batteries: '▣',
-        crystals: '◆',
-        customText: GAME_CONFIG.ui.lifeCustomText || '★'
-      };
-      return map[GAME_CONFIG.ui.lifeStyle] || '❤';
-    }
-
-    function renderComboBadge() {
-      const label = GAME_CONFIG.ui.messages.combo[state.combo];
-      els.comboBadgeHost.innerHTML = label
-        ? `<span class="combo-badge">⚡ ${label}: ${state.combo} подряд</span>`
-        : '';
-    }
-
-    function updateBonusButtons() {
-      const unlocked = GAME_CONFIG.gameplay.bonusEnabled && state.combo >= GAME_CONFIG.gameplay.bonusUnlockCombo;
-      const freezeReady = unlocked && !state.bonuses.freezeUsed && !state.gameOver;
-      const fiftyReady = unlocked && !state.bonuses.fiftyUsed && !state.gameOver && !state.bonuses.fiftyActive;
-      els.freezeBtn.disabled = !freezeReady;
-      els.fiftyBtn.disabled = !fiftyReady;
-      els.freezeBtn.classList.toggle('enabled', freezeReady);
-      els.fiftyBtn.classList.toggle('enabled', fiftyReady);
-
-      if (!GAME_CONFIG.gameplay.bonusEnabled) {
-        els.bonusHint.textContent = 'Бонусы выключены в настройках игры.';
-      } else if (unlocked) {
-        const parts = [];
-        parts.push(state.bonuses.freezeUsed ? 'Заморозка использована' : 'Заморозка доступна');
-        parts.push(state.bonuses.fiftyUsed ? '50/50 использован' : '50/50 доступен');
-        els.bonusHint.textContent = parts.join(' • ');
-      } else {
-        const left = Math.max(0, GAME_CONFIG.gameplay.bonusUnlockCombo - state.combo);
-        els.bonusHint.textContent = `До бонусов осталось ${left} ${pluralize(left, ['правильный ответ', 'правильных ответа', 'правильных ответов'])} подряд.`;
-      }
-    }
-
-    function renderCurrentQuestion() {
-      if (state.gameOver) return;
-
-      if (state.currentIndex >= state.questions.length) {
-        prepareQuestions();
-        state.currentIndex = 0;
+      function validateQuestions(questions, maxAnswerLength) {
+        if (!Array.isArray(questions) || !questions.length) throw new Error('Questions array is empty.');
+        questions.forEach((q, index) => {
+          if (!q || typeof q !== 'object') throw new Error(`Question at index ${index} is invalid.`);
+          if (!Array.isArray(q.answers) || q.answers.length < 3 || q.answers.length > 5) throw new Error(`Question "${q.id || index}" must contain 3..5 answers.`);
+          if (typeof q.correct_index !== 'number' || q.correct_index < 0 || q.correct_index >= q.answers.length) throw new Error(`Question "${q.id || index}" has invalid correct_index.`);
+          q.answers.forEach((answer, answerIndex) => {
+            if (String(answer).length > maxAnswerLength) throw new Error(`Answer ${answerIndex} in "${q.id || index}" exceeds maxAnswerLength (${maxAnswerLength}).`);
+          });
+        });
       }
 
-      state.motion.hiddenIndices = [];
-      state.bonuses.fiftyActive = false;
-      clearFreezeTimer();
-      state.bonuses.freezeActive = false;
-      els.arena.classList.remove('glow-correct', 'glow-wrong');
+      function createAudioManager(configRef) {
+        let ctx = null;
+        let freezeLoopNodes = null;
+        let freezeLfoNodes = null;
+        let scoreTickTimer = null;
 
-      const q = state.questions[state.currentIndex];
-      const zoneShape = q.zoneShape || GAME_CONFIG.ui.zoneShape;
-      const speed = GAME_CONFIG.gameplay.individualQuestionSpeed && q.speedPxPerSecond
-        ? q.speedPxPerSecond
-        : GAME_CONFIG.gameplay.speedPxPerSecond;
-      state.motion.speed = speed;
-
-      els.questionCounter.textContent = `Вопрос ${state.currentIndex + 1}`;
-      els.zoneTypeLabel.textContent = `Шкала: ${translateZone(zoneShape)}`;
-      els.questionText.textContent = q.question;
-      setMessage(`<strong>Новый вопрос.</strong> Останови индикатор в правильной зоне.`);
-      els.hintBox.innerHTML = `Количество вариантов: <strong>${q.answers.length}</strong> · Скорость: <strong>${speed}</strong> px/s · Движение: <strong>${translateMovement(GAME_CONFIG.gameplay.movementType)}</strong>`;
-
-      renderZone(q, zoneShape);
-      createIndicator(zoneShape);
-      requestAnimationFrame(() => startMotion(zoneShape, q.answers.length));
-      updateHUD();
-    }
-
-    function renderZone(question, zoneShape) {
-      els.zoneRoot.innerHTML = '';
-      if (zoneShape === 'vertical') {
-        renderVerticalZone(question);
-      } else if (zoneShape === 'arc') {
-        renderArcZone(question);
-      } else {
-        renderHorizontalZone(question);
-      }
-    }
-
-    function renderHorizontalZone(question) {
-      const zone = document.createElement('div');
-      zone.className = 'horizontal-zone';
-      question.answers.forEach((answer, index) => {
-        const seg = document.createElement('div');
-        seg.className = 'segment';
-        seg.dataset.index = index;
-        seg.style.flex = '1 1 0';
-        seg.textContent = answer;
-        zone.appendChild(seg);
-      });
-      els.zoneRoot.appendChild(zone);
-    }
-
-    function renderVerticalZone(question) {
-      const zone = document.createElement('div');
-      zone.className = 'vertical-zone';
-      question.answers.forEach((answer, index) => {
-        const seg = document.createElement('div');
-        seg.className = 'segment';
-        seg.dataset.index = index;
-        seg.textContent = answer;
-        zone.appendChild(seg);
-      });
-      els.zoneRoot.appendChild(zone);
-    }
-
-    function renderArcZone(question) {
-      const wrap = document.createElement('div');
-      wrap.className = 'arc-zone-wrap';
-      const svgNS = 'http://www.w3.org/2000/svg';
-      const svg = document.createElementNS(svgNS, 'svg');
-      svg.setAttribute('class', 'arc-svg');
-      svg.setAttribute('viewBox', '0 0 760 360');
-      svg.dataset.shape = 'arc';
-
-      const cx = 380;
-      const cy = 300;
-      const outerR = 245;
-      const innerR = 145;
-      const startDeg = 200;
-      const endDeg = 340;
-      const count = question.answers.length;
-      const step = (endDeg - startDeg) / count;
-
-      question.answers.forEach((answer, index) => {
-        const a1 = startDeg + index * step;
-        const a2 = startDeg + (index + 1) * step;
-        const path = document.createElementNS(svgNS, 'path');
-        path.setAttribute('d', describeArcSegment(cx, cy, innerR, outerR, a1, a2));
-        path.setAttribute('class', 'arc-segment-path');
-        path.dataset.index = index;
-        svg.appendChild(path);
-
-        const mid = (a1 + a2) / 2;
-        const labelPos = polar(cx, cy, (innerR + outerR) / 2, mid);
-        const text = document.createElementNS(svgNS, 'text');
-        text.setAttribute('x', labelPos.x);
-        text.setAttribute('y', labelPos.y);
-        text.setAttribute('class', 'arc-label');
-        text.textContent = truncateText(answer, 18);
-        svg.appendChild(text);
-      });
-
-      wrap.appendChild(svg);
-      els.zoneRoot.appendChild(wrap);
-    }
-
-    function createIndicator(zoneShape) {
-      els.indicatorLayer.innerHTML = '';
-      const indicator = document.createElement('div');
-      const type = GAME_CONFIG.ui.indicatorType;
-      indicator.id = 'indicator';
-      indicator.className = `indicator ${type}`;
-
-      if (type === 'custom' && GAME_CONFIG.ui.indicatorCustomImage) {
-        indicator.style.backgroundImage = `url('${GAME_CONFIG.ui.indicatorCustomImage}')`;
-      }
-
-      if (zoneShape === 'vertical') {
-        if (type === 'line') {
-          indicator.style.width = '120px';
-          indicator.style.height = '6px';
-          indicator.style.background = 'linear-gradient(90deg, #fff, #38bdf8)';
+        function ensureContext() {
+          if (!configRef.audio.enabled) return null;
+          if (!ctx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextClass) return null;
+            ctx = new AudioContextClass();
+          }
+          if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+          return ctx;
         }
-      } else if (zoneShape === 'arc') {
-        if (type === 'line') {
-          indicator.style.width = '6px';
-          indicator.style.height = '80px';
+
+        function beep(freq, duration, type, volumeMultiplier = 1) {
+          const audioCtx = ensureContext();
+          if (!audioCtx) return;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          const now = audioCtx.currentTime;
+          const volume = clamp(Number(configRef.audio.volume || 0.05) * volumeMultiplier, 0, 1);
+          osc.type = type || 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(Math.max(volume, 0.0001), now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + duration + 0.02);
         }
-      } else {
-        if (type === 'line') {
-          indicator.style.height = '120px';
+
+        function startFreezeLoop() {
+          const audioCtx = ensureContext();
+          if (!audioCtx || freezeLoopNodes) return;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          const lfo = audioCtx.createOscillator();
+          const lfoGain = audioCtx.createGain();
+          const now = audioCtx.currentTime;
+          const baseVolume = clamp(Number(configRef.audio.volume || 0.05) * 0.18, 0, 0.08);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(460, now);
+          lfo.type = 'sine';
+          lfo.frequency.setValueAtTime(3.2, now);
+          lfoGain.gain.setValueAtTime(0.02, now);
+          lfo.connect(lfoGain);
+          lfoGain.connect(gain.gain);
+          gain.gain.setValueAtTime(baseVolume, now);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          lfo.start(now);
+          freezeLoopNodes = { osc, gain };
+          freezeLfoNodes = { lfo, lfoGain };
         }
+
+        function stopFreezeLoop() {
+          if (!ctx || !freezeLoopNodes) return;
+          const now = ctx.currentTime;
+          try {
+            freezeLoopNodes.gain.gain.cancelScheduledValues(now);
+            freezeLoopNodes.gain.gain.setValueAtTime(freezeLoopNodes.gain.gain.value || 0.01, now);
+            freezeLoopNodes.gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+            freezeLoopNodes.osc.stop(now + 0.1);
+            freezeLfoNodes.lfo.stop(now + 0.1);
+          } catch (e) {}
+          freezeLoopNodes = null;
+          freezeLfoNodes = null;
+        }
+
+        function startScoreTicks(durationMs = 1000) {
+          if (scoreTickTimer) clearInterval(scoreTickTimer);
+          const interval = Number(configRef.audio.scoreTickIntervalMs || 40);
+          scoreTickTimer = setInterval(() => {
+            beep(700 + Math.random() * 120, 0.04, 'square', 0.35);
+          }, interval);
+          setTimeout(() => {
+            if (scoreTickTimer) clearInterval(scoreTickTimer);
+            scoreTickTimer = null;
+            beep(980, 0.15, 'triangle', 0.8);
+          }, durationMs);
+        }
+
+        return {
+          correct() { beep(720, 0.16, 'triangle', 1); setTimeout(() => beep(960, 0.18, 'triangle', 1), 70); },
+          wrong() { beep(220, 0.2, 'sawtooth', 1); setTimeout(() => beep(180, 0.16, 'sawtooth', 1), 80); },
+          click() { beep(520, 0.06, 'square', 0.9); },
+          freezeStart() { beep(420, 0.14, 'sine', 1.1); setTimeout(() => beep(520, 0.14, 'sine', 1.1), 90); startFreezeLoop(); },
+          freezeStop() { beep(680, 0.08, 'triangle', 0.9); stopFreezeLoop(); },
+          fifty() { beep(600, 0.08, 'square', 1); setTimeout(() => beep(760, 0.08, 'square', 1), 60); },
+          perfect() { beep(980, 0.12, 'triangle', 1.15); setTimeout(() => beep(1220, 0.12, 'triangle', 1.15), 80); },
+          achievement() { beep(880, 0.1, 'triangle', 0.9); setTimeout(() => beep(1180, 0.16, 'triangle', 0.9), 90); },
+          scoreCount(durationMs) { startScoreTicks(durationMs); },
+          shutdown() {
+            stopFreezeLoop();
+            if (scoreTickTimer) clearInterval(scoreTickTimer);
+            scoreTickTimer = null;
+          }
+        };
       }
 
-      els.indicatorLayer.appendChild(indicator);
-    }
+      function createGame() {
+        let rootEl = null;
+        let config = deepMerge({}, DEFAULT_CONFIG);
+        let questions = DEFAULT_QUESTIONS.slice();
+        let rafId = 0;
+        let lastTs = 0;
+        let roundTimeout = null;
+        let freezeInterval = null;
+        let resizeObserver = null;
+        let audio = createAudioManager(config);
+        let scoreAnimFrame = 0;
 
-    function startMotion(zoneShape, answerCount) {
-      stopMotion();
-      const indicator = document.getElementById('indicator');
-      if (!indicator) return;
+        const state = {
+          status: 'idle',
+          currentQuestionIndex: 0,
+          lives: 3,
+          correctAnswers: 0,
+          wrongAnswers: 0,
+          combo: 0,
+          bestCombo: 0,
+          perfectAnswers: 0,
+          perfectStreak: 0,
+          progressStep: 0,
+          stepsToFinish: 5,
+          accuracy: 0,
+          score: 0,
+          displayedScore: 0,
+          scoreAnimating: false,
+          energy: 0,
+          achievementsUnlocked: [],
+          usedFreezeAnyTime: false,
+          indicator: {
+            position: 0,
+            direction: 1,
+            speed: 300,
+            movementType: 'pingpong'
+          },
+          bonuses: {
+            freezeActive: false,
+            freezeRemainingMs: 0,
+            freezeResumeStatus: null
+          },
+          currentRound: {
+            selectedIndex: null,
+            correctIndex: null,
+            result: null,
+            stopAvailableAt: 0,
+            hiddenIndices: [],
+            visibleIndices: [],
+            questionId: null,
+            isPerfect: false,
+            awardedScore: 0,
+            mode: 'normal',
+            stepGain: 1,
+            energyGain: 0
+          }
+        };
 
-      state.motion.axis = zoneShape === 'vertical' ? 'y' : zoneShape === 'arc' ? 'arc' : 'x';
-      state.motion.running = true;
-      state.motion.frozen = false;
-      state.motion.canStop = false;
-      state.motion.startedAt = performance.now();
-      state.motion.lastTs = 0;
-      state.motion.pos = 0;
-      state.motion.direction = 1;
-      state.motion.availableIndices = buildAvailableIndices(answerCount);
+        const dom = {};
+        function emit(eventName, detail) { if (rootEl) rootEl.dispatchEvent(new CustomEvent(eventName, { detail })); }
 
-      const bounds = calculateBounds(zoneShape, indicator);
-      state.motion.min = bounds.min;
-      state.motion.max = bounds.max;
-      state.motion.pos = bounds.min;
+        function destroyTimers() {
+          if (rafId) cancelAnimationFrame(rafId);
+          rafId = 0;
+          if (scoreAnimFrame) cancelAnimationFrame(scoreAnimFrame);
+          scoreAnimFrame = 0;
+          if (roundTimeout) clearTimeout(roundTimeout);
+          roundTimeout = null;
+          if (freezeInterval) clearInterval(freezeInterval);
+          freezeInterval = null;
+          audio.freezeStop();
+          lastTs = 0;
+        }
 
-      updateIndicatorPosition(zoneShape, state.motion.pos);
-      scheduleStopUnlock();
-      els.stopBtn.disabled = false;
-      els.stopBtn.classList.add('small-cooldown');
+        const getCurrentQuestion = () => questions[state.currentQuestionIndex];
+        const getTotalAnswered = () => state.correctAnswers + state.wrongAnswers;
+        function updateAccuracy() {
+          state.accuracy = getTotalAnswered() > 0 ? Math.round((state.correctAnswers / getTotalAnswered()) * 100) : 0;
+        }
 
-      const animate = (ts) => {
-        if (!state.motion.running) return;
-        if (!state.motion.lastTs) state.motion.lastTs = ts;
-        const dt = (ts - state.motion.lastTs) / 1000;
-        state.motion.lastTs = ts;
+        function getLifeIcons() {
+          const maxLives = config.gameplay.lives;
+          const currentLives = state.lives;
+          let out = '';
+          const icon = config.ui.lifeDisplay === 'hearts' ? '♥' : '●';
+          for (let i = 0; i < maxLives; i++) {
+            out += i < currentLives ? icon : '♡';
+            if (i < maxLives - 1) out += ' ';
+          }
+          return out;
+        }
 
-        if (!state.motion.frozen) {
-          const distance = state.motion.speed * dt;
-          if (GAME_CONFIG.gameplay.movementType === 'cyclic') {
-            state.motion.pos += distance;
-            if (state.motion.pos > state.motion.max) {
-              state.motion.pos = state.motion.min + ((state.motion.pos - state.motion.min) % (state.motion.max - state.motion.min || 1));
+        function getComboMessage(combo) {
+          if (config.messages.combo[combo]) return config.messages.combo[combo];
+          if (combo >= 5) return config.messages.combo[5];
+          if (combo >= 3) return config.messages.combo[3];
+          if (combo >= 2) return config.messages.combo[2];
+          return '';
+        }
+
+        function questionModeClass(mode) {
+          if (mode === 'boss') return 'mot-question--boss';
+          if (mode === 'speed') return 'mot-question--speed';
+          if (mode === 'safe') return 'mot-question--safe';
+          if (mode === 'double_step') return 'mot-question--double';
+          return '';
+        }
+
+        function getBonusAvailable(type) {
+          const energy = state.energy;
+          if (type === 'freeze') return energy >= Number(config.bonuses.freezeCost || 100);
+          if (type === 'fifty') return energy >= Number(config.bonuses.fiftyCost || 60);
+          return false;
+        }
+
+        function spendEnergy(amount) {
+          state.energy = clamp(state.energy - amount, 0, Number(config.bonuses.energyMax || 100));
+        }
+
+        function gainEnergy(amount) {
+          state.energy = clamp(state.energy + amount, 0, Number(config.bonuses.energyMax || 100));
+        }
+
+        function animateScoreTo(target, durationMs = 800) {
+          if (scoreAnimFrame) cancelAnimationFrame(scoreAnimFrame);
+          const start = state.displayedScore;
+          const diff = target - start;
+          const startTime = performance.now();
+          state.scoreAnimating = true;
+          audio.scoreCount(durationMs);
+          function frame(now) {
+            const progress = clamp((now - startTime) / durationMs, 0, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            state.displayedScore = Math.round(start + diff * eased);
+            render();
+            if (progress < 1) scoreAnimFrame = requestAnimationFrame(frame);
+            else {
+              state.displayedScore = target;
+              state.scoreAnimating = false;
+              scoreAnimFrame = 0;
+              render();
             }
+          }
+          scoreAnimFrame = requestAnimationFrame(frame);
+        }
+
+        function showToast(title, text, type = 'achievement') {
+          if (!dom.toastLayer) return;
+          const el = document.createElement('div');
+          el.className = `mot-toast mot-toast--${type}`;
+          el.innerHTML = `<div class="mot-toast__title">${title}</div><div class="mot-toast__text">${text}</div>`;
+          dom.toastLayer.appendChild(el);
+          setTimeout(() => el.classList.add('mot-toast--out'), 1800);
+          setTimeout(() => el.remove(), 2100);
+        }
+
+        function triggerPerfectBurst() {
+          dom.perfectBurst.classList.remove('mot-perfect-burst--show');
+          void dom.perfectBurst.offsetWidth;
+          dom.perfectBurst.textContent = config.perfect.text || 'PERFECT!';
+          dom.perfectBurst.classList.add('mot-perfect-burst--show');
+        }
+
+        function triggerShake() {
+          dom.mainPanel.classList.remove('mot-shake');
+          void dom.mainPanel.offsetWidth;
+          dom.mainPanel.classList.add('mot-shake');
+        }
+
+        function maybeUnlockAchievement(code) {
+          if (!config.achievements.enabled) return;
+          const found = (config.achievements.list || []).find((item) => item.check === code);
+          if (!found) return;
+          if (state.achievementsUnlocked.includes(found.id)) return;
+          state.achievementsUnlocked.push(found.id);
+          audio.achievement();
+          showToast(found.title, found.text, 'achievement');
+        }
+
+        function checkAchievementsOnCorrect() {
+          if (state.combo >= 3) maybeUnlockAchievement('combo3');
+          if (state.combo >= 5) maybeUnlockAchievement('combo5');
+          if (state.perfectStreak >= 3) maybeUnlockAchievement('perfect3');
+        }
+
+        function checkAchievementsOnWin() {
+          if (state.lives <= 1) maybeUnlockAchievement('survivor');
+          if (!state.usedFreezeAnyTime) maybeUnlockAchievement('cool');
+        }
+
+        function spawnConfetti(count = 80) {
+          if (!dom.confettiLayer) return;
+          dom.confettiLayer.innerHTML = '';
+          const colors = ['#22c55e', '#38bdf8', '#f59e0b', '#ef4444', '#a78bfa', '#fde68a'];
+          for (let i = 0; i < count; i++) {
+            const piece = document.createElement('div');
+            piece.className = 'mot-confetti';
+            piece.style.left = `${Math.random() * 100}%`;
+            piece.style.background = colors[i % colors.length];
+            piece.style.animationDuration = `${3.2 + Math.random() * 2.2}s`;
+            piece.style.animationDelay = `${Math.random() * 0.35}s`;
+            piece.style.transform = `translateY(0) rotate(${Math.random() * 360}deg)`;
+            dom.confettiLayer.appendChild(piece);
+          }
+        }
+
+        function render() {
+          if (!rootEl) return;
+          updateAccuracy();
+          const question = getCurrentQuestion();
+          const answers = question ? question.answers : [];
+          const segments = answers.length || 1;
+          const segmentColumns = `repeat(${segments}, minmax(0, 1fr))`;
+
+          dom.currentQuestionIndex.textContent = String(state.currentQuestionIndex + 1);
+          dom.questionsTotal.textContent = String(questions.length);
+          dom.combo.textContent = `x${state.combo}`;
+          dom.bestCombo.textContent = `x${state.bestCombo}`;
+          dom.accuracy.textContent = `${state.accuracy}%`;
+          dom.lives.textContent = getLifeIcons();
+          dom.score.textContent = String(state.displayedScore);
+          dom.status.textContent = state.status;
+          dom.goal.textContent = String(config.gameplay.stepsToFinish);
+          dom.perfectCount.textContent = String(state.perfectAnswers);
+          dom.questionText.textContent = question ? question.question : '—';
+          dom.questionBox.className = `mot-panel mot-question ${questionModeClass(question && question.mode)}`.trim();
+          dom.scoreStat.classList.toggle('mot-stat--highlight', state.combo >= 3 || state.scoreAnimating);
+          dom.score.classList.toggle('mot-score-counting', state.scoreAnimating);
+          dom.lifeStat.classList.toggle('mot-stat--danger', state.lives <= Number(config.gameplay.lastChanceLivesThreshold || 1));
+
+          dom.stopButton.disabled = !(
+            state.status === 'indicator_moving' && performance.now() >= state.currentRound.stopAvailableAt && !state.bonuses.freezeActive
+          );
+          dom.freezeButton.disabled = !(state.status === 'indicator_moving' && getBonusAvailable('freeze'));
+          dom.fiftyButton.disabled = !(state.status === 'indicator_moving' && getBonusAvailable('fifty'));
+          dom.freezeButton.classList.toggle('mot-btn--bonus-ready', getBonusAvailable('freeze'));
+          dom.freezeButton.classList.toggle('mot-btn--freeze-active', state.bonuses.freezeActive);
+          dom.fiftyButton.classList.toggle('mot-btn--bonus-ready', getBonusAvailable('fifty'));
+          dom.freezeButton.textContent = state.bonuses.freezeActive ? 'Freeze активен' : `Freeze (${config.bonuses.freezeCost})`;
+          dom.fiftyButton.textContent = `50/50 (${config.bonuses.fiftyCost})`;
+
+          const timerVisible = state.bonuses.freezeActive;
+          dom.timerPill.classList.toggle('mot-timer__pill--visible', timerVisible);
+          dom.timerValue.textContent = timerVisible ? `${Math.ceil(state.bonuses.freezeRemainingMs / 1000)} c` : '';
+
+          const energyMax = Number(config.bonuses.energyMax || 100);
+          dom.energyValue.textContent = `${state.energy}/${energyMax}`;
+          dom.energyFill.style.width = `${percent(state.energy, energyMax)}%`;
+
+          dom.railSegments.style.gridTemplateColumns = segmentColumns;
+          dom.answerBand.style.gridTemplateColumns = segmentColumns;
+          dom.rail.classList.toggle('mot-rail--hide-borders', !config.ui.showSegmentBorders);
+          dom.answerBand.classList.toggle('mot-answer-band--hide-borders', !config.ui.showSegmentBorders);
+          dom.railSegments.innerHTML = '';
+          dom.answerBand.innerHTML = '';
+
+          answers.forEach((answer, index) => {
+            const segmentEl = document.createElement('div');
+            segmentEl.className = 'mot-rail__segment';
+            if (state.currentRound.result === 'correct' && index === state.currentRound.correctIndex) segmentEl.classList.add('mot-rail__segment--correct');
+            if (state.currentRound.result === 'wrong') {
+              if (index === state.currentRound.correctIndex) segmentEl.classList.add('mot-rail__segment--correct');
+              if (index === state.currentRound.selectedIndex) segmentEl.classList.add('mot-rail__segment--wrong');
+            }
+            dom.railSegments.appendChild(segmentEl);
+
+            const cellEl = document.createElement('div');
+            cellEl.className = 'mot-answer-band__cell';
+            cellEl.textContent = truncateText(String(answer), config.gameplay.maxAnswerLength);
+            if (state.currentRound.hiddenIndices.includes(index)) cellEl.classList.add('mot-answer-band__cell--hidden');
+            if (state.currentRound.result === 'correct' && index === state.currentRound.correctIndex) cellEl.classList.add('mot-answer-band__cell--correct');
+            if (state.currentRound.result === 'wrong') {
+              if (index === state.currentRound.correctIndex) cellEl.classList.add('mot-answer-band__cell--correct');
+              if (index === state.currentRound.selectedIndex) cellEl.classList.add('mot-answer-band__cell--wrong');
+            }
+            if (state.currentRound.isPerfect && index === state.currentRound.correctIndex) cellEl.classList.add('mot-answer-band__cell--perfect');
+            dom.answerBand.appendChild(cellEl);
+          });
+
+          renderProgressTrack();
+          renderIndicator();
+          renderBanner();
+          renderFinalScreen();
+        }
+
+        function renderProgressTrack() {
+          dom.trackFill.style.width = `${percent(state.progressStep, state.stepsToFinish)}%`;
+          dom.trackTicks.innerHTML = '';
+          dom.trackTicks.style.gridTemplateColumns = `repeat(${state.stepsToFinish}, minmax(0, 1fr))`;
+          for (let i = 0; i < state.stepsToFinish; i++) {
+            const tick = document.createElement('div');
+            tick.className = 'mot-track__tick';
+            dom.trackTicks.appendChild(tick);
+          }
+          const progressRatio = clamp(state.progressStep / state.stepsToFinish, 0, 1);
+          dom.trackRunner.style.left = `${progressRatio * 100}%`;
+          if (config.progress.playerTokenImage) {
+            dom.trackRunner.innerHTML = `<img src="${config.progress.playerTokenImage}" alt="player token" style="width:30px;height:30px;object-fit:contain;">`;
+          } else dom.trackRunner.textContent = config.progress.playerToken || '🏃';
+          dom.trackFinish.textContent = config.progress.finishIcon || '🏁';
+        }
+
+        function renderIndicator() {
+          const railRect = dom.rail.getBoundingClientRect();
+          const width = railRect.width || dom.rail.clientWidth || 1;
+          const x = clamp(state.indicator.position * width, 0, width);
+          dom.indicator.style.left = `${x}px`;
+          dom.indicator.classList.toggle('mot-indicator--frozen', state.bonuses.freezeActive);
+        }
+
+        function renderBanner() {
+          dom.banner.className = 'mot-banner';
+          if (state.status === 'question_ready' || state.status === 'indicator_moving') {
+            dom.banner.classList.add('mot-banner--info');
+            if (state.lives <= Number(config.gameplay.lastChanceLivesThreshold || 1)) {
+              dom.banner.textContent = config.messages.lastChance || 'Последний шанс!';
+              return;
+            }
+            if (state.bonuses.freezeActive) {
+              dom.banner.textContent = 'Индикатор заморожен. Следи за таймером Freeze.';
+              return;
+            }
+            const comboMessage = getComboMessage(state.combo);
+            const energyHint = getBonusAvailable('freeze') || getBonusAvailable('fifty') ? ' Бонус заряжен.' : '';
+            dom.banner.textContent = (comboMessage || 'Останови индикатор в зоне правильного ответа.') + energyHint;
+            return;
+          }
+          if (state.currentRound.isPerfect && state.currentRound.result === 'correct') {
+            dom.banner.classList.add('mot-banner--perfect');
+            dom.banner.textContent = `${randomFrom(config.messages.perfect)} +${state.currentRound.awardedScore}`;
+            return;
+          }
+          if (state.currentRound.result === 'correct') {
+            dom.banner.classList.add('mot-banner--correct');
+            const comboMessage = getComboMessage(state.combo);
+            dom.banner.textContent = `${comboMessage || randomFrom(config.messages.correct)} +${state.currentRound.awardedScore}`;
+            return;
+          }
+          if (state.currentRound.result === 'wrong') {
+            dom.banner.classList.add('mot-banner--wrong');
+            dom.banner.textContent = randomFrom(config.messages.wrong);
+            return;
+          }
+          dom.banner.classList.add('mot-banner--info');
+          dom.banner.textContent = 'Готов к следующему вопросу.';
+        }
+
+        function renderFinalScreen() {
+          const visible = state.status === 'game_win' || state.status === 'game_lose';
+          dom.final.classList.toggle('mot-final--visible', visible);
+          if (!visible) return;
+          const won = state.status === 'game_win';
+          dom.finalTitle.textContent = won ? 'Победа!' : 'Игра окончена';
+          dom.finalSubtitle.textContent = won ? 'Ты успешно прошел трек до финиша.' : 'Жизни закончились. Попробуй еще раз.';
+          dom.finalCorrect.textContent = String(state.correctAnswers);
+          dom.finalWrong.textContent = String(state.wrongAnswers);
+          dom.finalProgress.textContent = `${percent(state.progressStep, state.stepsToFinish)}%`;
+          dom.finalAccuracy.textContent = `${state.accuracy}%`;
+          dom.finalScore.textContent = String(state.displayedScore);
+        }
+
+        function setStatus(nextStatus) { state.status = nextStatus; render(); }
+
+        function computeSelectedSegment() {
+          const question = getCurrentQuestion();
+          const totalSegments = question.answers.length;
+          const width = 1 / totalSegments;
+          const rawIndex = Math.floor(clamp(state.indicator.position, 0, 0.999999) / width);
+          return clamp(rawIndex, 0, totalSegments - 1);
+        }
+
+        function isPerfectHit(question, selectedIndex) {
+          if (!config.perfect.enabled) return false;
+          if (selectedIndex !== question.correct_index) return false;
+          const totalSegments = question.answers.length;
+          const segmentWidth = 1 / totalSegments;
+          const segmentStart = selectedIndex * segmentWidth;
+          const center = segmentStart + segmentWidth / 2;
+          const threshold = segmentWidth * Number(config.perfect.thresholdRatio || 0.12);
+          return Math.abs(state.indicator.position - center) <= threshold;
+        }
+
+        function resetRoundState() {
+          state.currentRound.selectedIndex = null;
+          state.currentRound.correctIndex = null;
+          state.currentRound.result = null;
+          state.currentRound.hiddenIndices = [];
+          state.currentRound.visibleIndices = [];
+          state.currentRound.questionId = null;
+          state.currentRound.isPerfect = false;
+          state.currentRound.awardedScore = 0;
+          state.currentRound.mode = 'normal';
+          state.currentRound.stepGain = 1;
+          state.currentRound.energyGain = 0;
+        }
+
+        function loadQuestion(index) {
+          const question = questions[index];
+          if (!question) return;
+          resetRoundState();
+          state.currentRound.questionId = question.id;
+          state.currentRound.correctIndex = question.correct_index;
+          state.currentRound.visibleIndices = question.answers.map((_, i) => i);
+          state.currentRound.mode = question.mode || 'normal';
+          state.indicator.position = 0;
+          state.indicator.direction = 1;
+          state.indicator.speed = Number(question.speed || config.movement.defaultSpeed || 300);
+          state.indicator.movementType = config.movement.movementType || 'pingpong';
+          state.currentRound.stopAvailableAt = performance.now() + Number(config.movement.minStopDelayMs || 800);
+          emit('QUESTION_LOAD', { index, question });
+          setStatus('question_ready');
+        }
+
+        function tick(ts) {
+          if (!lastTs) lastTs = ts;
+          const delta = (ts - lastTs) / 1000;
+          lastTs = ts;
+          if (state.status === 'indicator_moving' && !state.bonuses.freezeActive) {
+            const railRect = dom.rail.getBoundingClientRect();
+            const width = Math.max(railRect.width, 1);
+            const speedPxPerSec = state.indicator.speed;
+            const speedNorm = speedPxPerSec / width;
+            let nextPos = state.indicator.position + speedNorm * delta * state.indicator.direction;
+            if (state.indicator.movementType === 'pingpong') {
+              if (nextPos >= 1) { nextPos = 1 - (nextPos - 1); state.indicator.direction = -1; }
+              else if (nextPos <= 0) { nextPos = Math.abs(nextPos); state.indicator.direction = 1; }
+            } else {
+              if (nextPos >= 1) nextPos = nextPos - 1;
+              if (nextPos < 0) nextPos = 1 + nextPos;
+            }
+            state.indicator.position = clamp(nextPos, 0, 1);
+            renderIndicator();
+            if (performance.now() >= state.currentRound.stopAvailableAt) dom.stopButton.disabled = false;
+          }
+          rafId = requestAnimationFrame(tick);
+        }
+
+        function startIndicator() {
+          if (state.status !== 'question_ready' && state.status !== 'transition_next') return;
+          emit('INDICATOR_START', { questionIndex: state.currentQuestionIndex });
+          setStatus('indicator_moving');
+        }
+
+        function useFreeze() {
+          if (!(state.status === 'indicator_moving' && getBonusAvailable('freeze'))) return;
+          spendEnergy(Number(config.bonuses.freezeCost || 100));
+          state.bonuses.freezeActive = true;
+          state.bonuses.freezeRemainingMs = Number(config.bonuses.freezeDurationMs || 10000);
+          state.bonuses.freezeResumeStatus = 'indicator_moving';
+          state.usedFreezeAnyTime = true;
+          emit('BONUS_USE_FREEZE', { freezeDurationMs: state.bonuses.freezeRemainingMs });
+          audio.freezeStart();
+          render();
+          const startedAt = Date.now();
+          freezeInterval = setInterval(() => {
+            const elapsed = Date.now() - startedAt;
+            state.bonuses.freezeRemainingMs = Math.max(0, Number(config.bonuses.freezeDurationMs || 10000) - elapsed);
+            render();
+            if (state.bonuses.freezeRemainingMs <= 0) {
+              clearInterval(freezeInterval);
+              freezeInterval = null;
+              state.bonuses.freezeActive = false;
+              state.bonuses.freezeRemainingMs = 0;
+              audio.freezeStop();
+              render();
+            }
+          }, 100);
+        }
+
+        function useFifty() {
+          if (!(state.status === 'indicator_moving' && getBonusAvailable('fifty'))) return;
+          const question = getCurrentQuestion();
+          const wrongIndices = question.answers.map((_, i) => i).filter((i) => i !== question.correct_index);
+          if (wrongIndices.length <= 1) return;
+          const keptWrongIndex = wrongIndices[Math.floor(Math.random() * wrongIndices.length)];
+          const hide = wrongIndices.filter((i) => i !== keptWrongIndex).slice(0, 2);
+          spendEnergy(Number(config.bonuses.fiftyCost || 60));
+          state.currentRound.hiddenIndices = hide;
+          emit('BONUS_USE_FIFTY', { hiddenIndices: hide, keptWrongIndex });
+          audio.fifty();
+          render();
+        }
+
+        function calculateRoundRewards(question, isCorrect, isPerfect) {
+          let awardedScore = 0;
+          let stepGain = 0;
+          let energyGain = 0;
+          if (!isCorrect) return { awardedScore, stepGain, energyGain };
+          const comboMultiplier = Math.min(state.combo, Number(config.scoring.comboCap || 5)) * Number(config.scoring.comboStep || 50);
+          awardedScore += Number(config.scoring.baseCorrect || 100) + comboMultiplier;
+          energyGain += Number(config.bonuses.energyGainCorrect || 30);
+          stepGain = 1;
+          if (question.mode === 'speed') awardedScore = Math.round(awardedScore * Number(config.scoring.speedRoundMultiplier || 1.5));
+          if (question.mode === 'boss') awardedScore = Math.round(awardedScore * Number(config.scoring.bossRoundMultiplier || 2));
+          if (question.mode === 'double_step') {
+            stepGain = 2;
+            awardedScore += Number(config.scoring.doubleStepBonus || 50);
+          }
+          if (isPerfect) {
+            awardedScore += Number(config.scoring.perfectBonus || 100);
+            energyGain += Number(config.bonuses.energyGainPerfect || 20);
+          }
+          return { awardedScore, stepGain, energyGain };
+        }
+
+        function checkAnswer() {
+          if (state.status !== 'indicator_stopped') return;
+          const question = getCurrentQuestion();
+          const isCorrect = state.currentRound.selectedIndex === question.correct_index;
+          const perfectHit = isPerfectHit(question, state.currentRound.selectedIndex);
+          state.currentRound.correctIndex = question.correct_index;
+          state.currentRound.result = isCorrect ? 'correct' : 'wrong';
+          state.currentRound.isPerfect = perfectHit;
+          emit('ANSWER_CHECK', { selectedIndex: state.currentRound.selectedIndex, correctIndex: question.correct_index, isCorrect, perfectHit });
+
+          if (isCorrect) {
+            state.combo += 1;
+            state.bestCombo = Math.max(state.bestCombo, state.combo);
+            state.correctAnswers += 1;
+            state.perfectStreak = perfectHit ? state.perfectStreak + 1 : 0;
+            if (perfectHit) state.perfectAnswers += 1;
+            const rewards = calculateRoundRewards(question, true, perfectHit);
+            state.currentRound.awardedScore = rewards.awardedScore;
+            state.currentRound.stepGain = rewards.stepGain;
+            state.currentRound.energyGain = rewards.energyGain;
+            state.progressStep += rewards.stepGain;
+            state.score += rewards.awardedScore;
+            gainEnergy(rewards.energyGain);
+            animateScoreTo(state.score, Number(config.gameplay.scoreCountDurationMs || 1200));
+            if (perfectHit) {
+              audio.perfect();
+              triggerPerfectBurst();
+              showToast('Perfect', `+${rewards.awardedScore} очков`, 'perfect');
+            } else {
+              audio.correct();
+            }
+            checkAchievementsOnCorrect();
+            emit('ANSWER_CORRECT', { progressStep: state.progressStep, combo: state.combo, awardedScore: rewards.awardedScore });
           } else {
-            state.motion.pos += distance * state.motion.direction;
-            if (state.motion.pos >= state.motion.max) {
-              state.motion.pos = state.motion.max;
-              state.motion.direction = -1;
-            }
-            if (state.motion.pos <= state.motion.min) {
-              state.motion.pos = state.motion.min;
-              state.motion.direction = 1;
-            }
+            const safeRound = question.mode === 'safe' && config.gameplay.safeRoundNoLifeLoss;
+            if (!safeRound) state.lives -= 1;
+            state.wrongAnswers += 1;
+            state.combo = 0;
+            state.perfectStreak = 0;
+            state.currentRound.awardedScore = 0;
+            state.currentRound.stepGain = 0;
+            state.currentRound.energyGain = -Number(config.bonuses.energyLossWrong || 20);
+            gainEnergy(-Number(config.bonuses.energyLossWrong || 20));
+            audio.wrong();
+            triggerShake();
+            emit('ANSWER_WRONG', { lives: state.lives, safeRound });
           }
 
-          updateIndicatorPosition(zoneShape, state.motion.pos);
+          updateAccuracy();
+          setStatus('showing_result');
+
+          if (state.progressStep >= state.stepsToFinish) {
+            roundTimeout = setTimeout(() => {
+              checkAchievementsOnWin();
+              emit('GAME_WIN', { state: getPublicState() });
+              setStatus('game_win');
+              spawnConfetti(100);
+            }, 1100);
+            return;
+          }
+          if (state.lives <= 0) {
+            roundTimeout = setTimeout(() => {
+              emit('GAME_LOSE', { state: getPublicState() });
+              setStatus('game_lose');
+            }, 1100);
+            return;
+          }
+          roundTimeout = setTimeout(() => nextQuestion(), Number(config.ui.autoNextDelayMs || 1700));
         }
 
-        state.motion.requestId = requestAnimationFrame(animate);
+        function stopIndicator() {
+          if (state.status !== 'indicator_moving') return;
+          if (performance.now() < state.currentRound.stopAvailableAt) return;
+          if (state.bonuses.freezeActive) return;
+          state.currentRound.selectedIndex = computeSelectedSegment();
+          emit('INDICATOR_STOP', { indicatorPosition: state.indicator.position, selectedIndex: state.currentRound.selectedIndex });
+          setStatus('indicator_stopped');
+          checkAnswer();
+        }
+
+        function nextQuestion() {
+          if (state.status === 'game_win' || state.status === 'game_lose') return;
+          state.currentQuestionIndex = (state.currentQuestionIndex + 1) % questions.length;
+          emit('NEXT_QUESTION', { currentQuestionIndex: state.currentQuestionIndex });
+          loadQuestion(state.currentQuestionIndex);
+          roundTimeout = setTimeout(() => startIndicator(), 260);
+        }
+
+        function getPublicState() {
+          return JSON.parse(JSON.stringify({
+            status: state.status,
+            currentQuestionIndex: state.currentQuestionIndex,
+            lives: state.lives,
+            correctAnswers: state.correctAnswers,
+            wrongAnswers: state.wrongAnswers,
+            combo: state.combo,
+            bestCombo: state.bestCombo,
+            perfectAnswers: state.perfectAnswers,
+            progressStep: state.progressStep,
+            stepsToFinish: state.stepsToFinish,
+            accuracy: state.accuracy,
+            score: state.score,
+            displayedScore: state.displayedScore,
+            energy: state.energy,
+            achievementsUnlocked: state.achievementsUnlocked,
+            indicator: state.indicator,
+            bonuses: state.bonuses,
+            currentRound: state.currentRound
+          }));
+        }
+
+        function attachEvents() {
+          dom.stopButton.addEventListener('click', () => { audio.click(); stopIndicator(); });
+          dom.freezeButton.addEventListener('click', () => { audio.click(); useFreeze(); });
+          dom.fiftyButton.addEventListener('click', () => { audio.click(); useFifty(); });
+          dom.restartButton.addEventListener('click', () => { audio.click(); api.restart(); });
+          dom.exitButton.addEventListener('click', () => { audio.click(); dom.final.classList.remove('mot-final--visible'); });
+        }
+
+        function buildDOM(mountEl) {
+          mountEl.innerHTML = '';
+          const wrapper = document.createElement('div');
+          wrapper.className = 'mot-root';
+          wrapper.innerHTML = `
+            <div class="mot-shell">
+              <section class="mot-panel mot-hud" aria-label="Верхняя панель">
+                <div class="mot-stat"><div class="mot-stat__label">Вопрос</div><div class="mot-stat__value"><span data-mot="currentQuestionIndex">1</span> / <span data-mot="questionsTotal">0</span></div></div>
+                <div class="mot-stat mot-stat--highlight"><div class="mot-stat__label">Серия</div><div class="mot-stat__value" data-mot="combo">x0</div></div>
+                <div class="mot-stat"><div class="mot-stat__label">Лучшая серия</div><div class="mot-stat__value" data-mot="bestCombo">x0</div></div>
+                <div class="mot-stat" data-mot="scoreStat"><div class="mot-stat__label">Очки</div><div class="mot-stat__value" data-mot="score">0</div></div>
+                <div class="mot-stat"><div class="mot-stat__label">Perfect</div><div class="mot-stat__value" data-mot="perfectCount">0</div></div>
+                <div class="mot-stat"><div class="mot-stat__label">Точность</div><div class="mot-stat__value" data-mot="accuracy">0%</div></div>
+                <div class="mot-stat" data-mot="lifeStat"><div class="mot-stat__label">Жизни</div><div class="mot-stat__value" data-mot="lives">♥ ♥ ♥</div></div>
+                <div class="mot-stat"><div class="mot-stat__label">Цель</div><div class="mot-stat__value"><span data-mot="goal">0</span> шагов</div></div>
+              </section>
+
+              <section class="mot-panel mot-progress" aria-label="Трек прогресса">
+                <div class="mot-progress__header">
+                  <div class="mot-progress__title">Прогресс игрока</div>
+                  <div class="mot-progress__meta">Дойди до финиша раньше, чем закончатся жизни</div>
+                </div>
+                <div class="mot-track" data-mot="track">
+                  <div class="mot-track__fill" data-mot="trackFill"></div>
+                  <div class="mot-track__ticks" data-mot="trackTicks"></div>
+                  <div class="mot-track__runner" data-mot="trackRunner">🏃</div>
+                  <div class="mot-track__finish" data-mot="trackFinish">🏁</div>
+                </div>
+              </section>
+
+              <section class="mot-panel mot-main" data-mot="mainPanel" aria-label="Игровой экран">
+                <div class="mot-panel mot-question" data-mot="questionBox">
+                  <div class="mot-question__inner" data-mot="questionText">Загрузка вопроса…</div>
+                </div>
+
+                <div class="mot-rail-wrap">
+                  <div class="mot-rail-frame">
+                    <div class="mot-rail" data-mot="rail">
+                      <div class="mot-rail__segments" data-mot="railSegments"></div>
+                    </div>
+                    <div class="mot-indicator" data-mot="indicator" aria-hidden="true">
+                      <div class="mot-indicator__inner">🏃</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mot-answer-band-wrap">
+                  <div class="mot-answer-band" data-mot="answerBand"></div>
+                </div>
+
+                <div class="mot-controls-row">
+                  <div class="mot-bonuses">
+                    <div class="mot-energy">
+                      <div class="mot-energy__meta"><span>Энергия бонусов</span><span data-mot="energyValue">0/100</span></div>
+                      <div class="mot-energy__bar"><div class="mot-energy__fill" data-mot="energyFill"></div></div>
+                    </div>
+                    <button class="mot-btn mot-btn--bonus" type="button" data-mot="fiftyButton">50/50</button>
+                    <button class="mot-btn mot-btn--bonus" type="button" data-mot="freezeButton">Freeze</button>
+                  </div>
+                  <button class="mot-btn mot-btn--stop" type="button" data-mot="stopButton">STOP</button>
+                </div>
+
+                <div class="mot-feedback">
+                  <div class="mot-banner mot-banner--info" data-mot="banner">Останови индикатор в зоне правильного ответа.</div>
+                  <div class="mot-timer">
+                    <div class="mot-timer__pill" data-mot="timerPill"><span>❄</span><span>Freeze:</span><span data-mot="timerValue"></span></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <div class="mot-perfect-burst" data-mot="perfectBurst">PERFECT!</div>
+            <div class="mot-toast-layer" data-mot="toastLayer"></div>
+
+            <div class="mot-final" data-mot="finalScreen" aria-live="polite">
+              <div class="mot-final__card">
+                <div class="mot-confetti-layer" data-mot="confettiLayer"></div>
+                <div class="mot-final__title" data-mot="finalTitle">Победа!</div>
+                <div class="mot-final__subtitle" data-mot="finalSubtitle">Результат игры</div>
+                <div class="mot-final__stats">
+                  <div class="mot-final__stat"><div class="mot-final__stat-value" data-mot="finalCorrect">0</div><div class="mot-final__stat-label">Верных</div></div>
+                  <div class="mot-final__stat"><div class="mot-final__stat-value" data-mot="finalWrong">0</div><div class="mot-final__stat-label">Ошибок</div></div>
+                  <div class="mot-final__stat"><div class="mot-final__stat-value" data-mot="finalProgress">0%</div><div class="mot-final__stat-label">Прогресс</div></div>
+                  <div class="mot-final__stat"><div class="mot-final__stat-value" data-mot="finalAccuracy">0%</div><div class="mot-final__stat-label">Точность</div></div>
+                  <div class="mot-final__stat"><div class="mot-final__stat-value" data-mot="finalScore">0</div><div class="mot-final__stat-label">Очки</div></div>
+                </div>
+                <div class="mot-final__actions">
+                  <button class="mot-btn" type="button" data-mot="restartButton">Restart</button>
+                  <button class="mot-btn" type="button" data-mot="exitButton">Exit</button>
+                </div>
+              </div>
+            </div>
+          `;
+          mountEl.appendChild(wrapper);
+          rootEl = wrapper;
+          dom.currentQuestionIndex = rootEl.querySelector('[data-mot="currentQuestionIndex"]');
+          dom.questionsTotal = rootEl.querySelector('[data-mot="questionsTotal"]');
+          dom.combo = rootEl.querySelector('[data-mot="combo"]');
+          dom.bestCombo = rootEl.querySelector('[data-mot="bestCombo"]');
+          dom.accuracy = rootEl.querySelector('[data-mot="accuracy"]');
+          dom.lives = rootEl.querySelector('[data-mot="lives"]');
+          dom.score = rootEl.querySelector('[data-mot="score"]');
+          dom.status = { textContent: '' };
+          dom.goal = rootEl.querySelector('[data-mot="goal"]');
+          dom.track = rootEl.querySelector('[data-mot="track"]');
+          dom.trackFill = rootEl.querySelector('[data-mot="trackFill"]');
+          dom.trackTicks = rootEl.querySelector('[data-mot="trackTicks"]');
+          dom.trackRunner = rootEl.querySelector('[data-mot="trackRunner"]');
+          dom.trackFinish = rootEl.querySelector('[data-mot="trackFinish"]');
+          dom.questionText = rootEl.querySelector('[data-mot="questionText"]');
+          dom.questionBox = rootEl.querySelector('[data-mot="questionBox"]');
+          dom.rail = rootEl.querySelector('[data-mot="rail"]');
+          dom.railSegments = rootEl.querySelector('[data-mot="railSegments"]');
+          dom.indicator = rootEl.querySelector('[data-mot="indicator"]');
+          dom.answerBand = rootEl.querySelector('[data-mot="answerBand"]');
+          dom.freezeButton = rootEl.querySelector('[data-mot="freezeButton"]');
+          dom.fiftyButton = rootEl.querySelector('[data-mot="fiftyButton"]');
+          dom.stopButton = rootEl.querySelector('[data-mot="stopButton"]');
+          dom.banner = rootEl.querySelector('[data-mot="banner"]');
+          dom.timerPill = rootEl.querySelector('[data-mot="timerPill"]');
+          dom.timerValue = rootEl.querySelector('[data-mot="timerValue"]');
+          dom.final = rootEl.querySelector('[data-mot="finalScreen"]');
+          dom.finalTitle = rootEl.querySelector('[data-mot="finalTitle"]');
+          dom.finalSubtitle = rootEl.querySelector('[data-mot="finalSubtitle"]');
+          dom.finalCorrect = rootEl.querySelector('[data-mot="finalCorrect"]');
+          dom.finalWrong = rootEl.querySelector('[data-mot="finalWrong"]');
+          dom.finalProgress = rootEl.querySelector('[data-mot="finalProgress"]');
+          dom.finalAccuracy = rootEl.querySelector('[data-mot="finalAccuracy"]');
+          dom.finalScore = rootEl.querySelector('[data-mot="finalScore"]');
+          dom.restartButton = rootEl.querySelector('[data-mot="restartButton"]');
+          dom.exitButton = rootEl.querySelector('[data-mot="exitButton"]');
+          dom.energyValue = rootEl.querySelector('[data-mot="energyValue"]');
+          dom.energyFill = rootEl.querySelector('[data-mot="energyFill"]');
+          dom.toastLayer = rootEl.querySelector('[data-mot="toastLayer"]');
+          dom.perfectBurst = rootEl.querySelector('[data-mot="perfectBurst"]');
+          dom.mainPanel = rootEl.querySelector('[data-mot="mainPanel"]');
+          dom.lifeStat = rootEl.querySelector('[data-mot="lifeStat"]');
+          dom.scoreStat = rootEl.querySelector('[data-mot="scoreStat"]');
+          dom.perfectCount = rootEl.querySelector('[data-mot="perfectCount"]');
+          dom.confettiLayer = rootEl.querySelector('[data-mot="confettiLayer"]');
+          dom.goal.textContent = String(config.gameplay.stepsToFinish);
+          attachEvents();
+          if (typeof ResizeObserver !== 'undefined') {
+            resizeObserver = new ResizeObserver(() => renderIndicator());
+            resizeObserver.observe(rootEl);
+            resizeObserver.observe(dom.rail);
+          } else {
+            window.addEventListener('resize', renderIndicator);
+          }
+        }
+
+        function resetState() {
+          state.status = 'idle';
+          state.currentQuestionIndex = 0;
+          state.lives = Number(config.gameplay.lives || 3);
+          state.correctAnswers = 0;
+          state.wrongAnswers = 0;
+          state.combo = 0;
+          state.bestCombo = 0;
+          state.perfectAnswers = 0;
+          state.perfectStreak = 0;
+          state.progressStep = 0;
+          state.stepsToFinish = Number(config.gameplay.stepsToFinish || 5);
+          state.accuracy = 0;
+          state.score = 0;
+          state.displayedScore = 0;
+          state.scoreAnimating = false;
+          state.energy = 0;
+          state.achievementsUnlocked = [];
+          state.usedFreezeAnyTime = false;
+          state.indicator.position = 0;
+          state.indicator.direction = 1;
+          state.indicator.speed = Number(config.movement.defaultSpeed || 300);
+          state.indicator.movementType = config.movement.movementType || 'pingpong';
+          state.bonuses.freezeActive = false;
+          state.bonuses.freezeRemainingMs = 0;
+          state.bonuses.freezeResumeStatus = null;
+          resetRoundState();
+        }
+
+        const api = {
+          init(userConfig = {}, userQuestions = null, mountTarget = '#moment-of-truth-root') {
+            destroyTimers();
+            config = deepMerge(DEFAULT_CONFIG, userConfig || {});
+            audio = createAudioManager(config);
+            const nextQuestions = Array.isArray(userQuestions) ? userQuestions : questions;
+            validateQuestions(nextQuestions, config.gameplay.maxAnswerLength);
+            questions = nextQuestions.map((q) => ({ ...q, answers: q.answers.slice() }));
+            const mountEl = typeof mountTarget === 'string' ? document.querySelector(mountTarget) : mountTarget;
+            if (!mountEl) throw new Error('Mount element not found.');
+            buildDOM(mountEl);
+            resetState();
+            emit('GAME_INIT', { config, questions });
+            loadQuestion(0);
+            render();
+            return this;
+          },
+          start() {
+            if (!rootEl) throw new Error('Call MomentOfTruth.init(config) before start().');
+            if (state.status === 'idle' || state.status === 'question_ready' || state.status === 'transition_next') {
+              emit('GAME_START', { state: getPublicState() });
+              startIndicator();
+              if (!rafId) rafId = requestAnimationFrame(tick);
+            }
+            return this;
+          },
+          restart() {
+            destroyTimers();
+            resetState();
+            emit('GAME_RESTART', { state: getPublicState() });
+            loadQuestion(0);
+            render();
+            this.start();
+            return this;
+          },
+          destroy() {
+            destroyTimers();
+            audio.shutdown();
+            if (resizeObserver) { resizeObserver.disconnect(); resizeObserver = null; }
+            else window.removeEventListener('resize', renderIndicator);
+            if (rootEl && rootEl.parentNode) rootEl.parentNode.removeChild(rootEl);
+            rootEl = null;
+          },
+          getState() { return getPublicState(); },
+          setConfig(nextConfig = {}) {
+            config = deepMerge(config, nextConfig);
+            audio = createAudioManager(config);
+            state.stepsToFinish = Number(config.gameplay.stepsToFinish || state.stepsToFinish);
+            render();
+            return this;
+          },
+          loadQuestions(nextQuestions = []) {
+            validateQuestions(nextQuestions, config.gameplay.maxAnswerLength);
+            questions = nextQuestions.map((q) => ({ ...q, answers: q.answers.slice() }));
+            resetState();
+            loadQuestion(0);
+            render();
+            return this;
+          }
+        };
+
+        return api;
+      }
+
+      window.MomentOfTruth = createGame();
+
+      const demoConfig = {
+        gameplay: {
+          lives: 3,
+          stepsToFinish: 6,
+          maxAnswerLength: 40,
+          scoreCountDurationMs: 1100
+        },
+        movement: {
+          movementType: 'pingpong',
+          minStopDelayMs: 800,
+          defaultSpeed: 320,
+          indicatorType: 'runner'
+        },
+        bonuses: {
+          freezeDurationMs: 10000,
+          energyEnabled: true,
+          energyMax: 100,
+          freezeCost: 100,
+          fiftyCost: 60,
+          energyGainCorrect: 30,
+          energyGainPerfect: 20,
+          energyLossWrong: 20
+        },
+        perfect: {
+          enabled: true,
+          thresholdRatio: 0.12,
+          text: 'PERFECT!'
+        },
+        audio: { enabled: true, volume: 0.05 }
       };
 
-      state.motion.requestId = requestAnimationFrame(animate);
-    }
+      const demoQuestions = DEFAULT_QUESTIONS;
 
-    function calculateBounds(zoneShape, indicator) {
-      const arenaRect = els.arena.getBoundingClientRect();
-      if (zoneShape === 'vertical') {
-        const zone = els.zoneRoot.querySelector('.vertical-zone');
-        const rect = zone.getBoundingClientRect();
-        const min = rect.top - arenaRect.top;
-        const max = rect.bottom - arenaRect.top;
-        return { min, max };
-      }
-      if (zoneShape === 'arc') {
-        return { min: 200, max: 340 };
-      }
-      const zone = els.zoneRoot.querySelector('.horizontal-zone');
-      const rect = zone.getBoundingClientRect();
-      const min = rect.left - arenaRect.left;
-      const max = rect.right - arenaRect.left;
-      return { min, max };
-    }
-
-    function updateIndicatorPosition(zoneShape, pos) {
-      const indicator = document.getElementById('indicator');
-      if (!indicator) return;
-
-      if (zoneShape === 'vertical') {
-        const zone = els.zoneRoot.querySelector('.vertical-zone');
-        if (!zone) return;
-        const rect = zone.getBoundingClientRect();
-        const arenaRect = els.arena.getBoundingClientRect();
-        const centerX = rect.left - arenaRect.left + rect.width / 2;
-        const y = pos;
-        indicator.style.left = `${centerX}px`;
-        indicator.style.top = `${y}px`;
-        indicator.style.transform = GAME_CONFIG.ui.indicatorType === 'arrow'
-          ? 'translate(-50%, -70%) rotate(-90deg)'
-          : 'translate(-50%, -50%)';
-        return;
-      }
-
-      if (zoneShape === 'arc') {
-        const svg = els.zoneRoot.querySelector('.arc-svg');
-        if (!svg) return;
-        const box = svg.getBoundingClientRect();
-        const arenaRect = els.arena.getBoundingClientRect();
-        const localX = box.left - arenaRect.left;
-        const localY = box.top - arenaRect.top;
-        const vb = { cx: 380, cy: 300, r: 245 };
-        const angle = pos;
-        const p = polar(vb.cx, vb.cy, vb.r, angle);
-        const scaleX = box.width / 760;
-        const scaleY = box.height / 360;
-        const x = localX + p.x * scaleX;
-        const y = localY + p.y * scaleY;
-        indicator.style.left = `${x}px`;
-        indicator.style.top = `${y}px`;
-        indicator.style.transform = GAME_CONFIG.ui.indicatorType === 'arrow'
-          ? `translate(-50%, -50%) rotate(${angle - 90}deg)`
-          : 'translate(-50%, -50%)';
-        return;
-      }
-
-      const zone = els.zoneRoot.querySelector('.horizontal-zone');
-      if (!zone) return;
-      const rect = zone.getBoundingClientRect();
-      const arenaRect = els.arena.getBoundingClientRect();
-      const x = pos;
-      const y = rect.top - arenaRect.top;
-      indicator.style.left = `${x}px`;
-      indicator.style.top = `${y}px`;
-      indicator.style.transform = GAME_CONFIG.ui.indicatorType === 'arrow'
-        ? 'translate(-50%, -72%)'
-        : 'translate(-50%, -50%)';
-    }
-
-    function scheduleStopUnlock() {
-      setTimeout(() => {
-        if (!state.motion.running) return;
-        state.motion.canStop = true;
-        els.stopBtn.classList.remove('small-cooldown');
-      }, GAME_CONFIG.gameplay.minStopDelayMs);
-    }
-
-    function stopMotion() {
-      if (state.motion.requestId) cancelAnimationFrame(state.motion.requestId);
-      state.motion.requestId = null;
-      state.motion.running = false;
-      state.motion.lastTs = 0;
-    }
-
-    function onStopPress() {
-      if (state.gameOver || !state.motion.running) return;
-      if (!state.motion.canStop) {
-        setMessage('Подожди долю секунды перед нажатием СТОП.');
-        return;
-      }
-      state.motion.frozen = true;
-      state.motion.running = false;
-      if (state.motion.requestId) cancelAnimationFrame(state.motion.requestId);
-      els.stopBtn.disabled = true;
-      const selectedIndex = getSelectedSegmentIndex();
-      revealAnswer(selectedIndex);
-    }
-
-    function getSelectedSegmentIndex() {
-      const q = state.questions[state.currentIndex];
-      const zoneShape = q.zoneShape || GAME_CONFIG.ui.zoneShape;
-      const available = buildAvailableIndices(q.answers.length);
-      state.motion.availableIndices = available;
-      const count = available.length;
-
-      if (zoneShape === 'arc') {
-        const normalized = clamp((state.motion.pos - state.motion.min) / (state.motion.max - state.motion.min || 1), 0, 0.999999);
-        const local = Math.floor(normalized * count);
-        return available[local];
-      }
-
-      const normalized = clamp((state.motion.pos - state.motion.min) / (state.motion.max - state.motion.min || 1), 0, 0.999999);
-      const local = Math.floor(normalized * count);
-      return available[local];
-    }
-
-    function revealAnswer(selectedIndex) {
-      const q = state.questions[state.currentIndex];
-      const correct = q.correct_index;
-      const isCorrect = selectedIndex === correct;
-
-      markSegments(selectedIndex, correct, isCorrect);
-
-      if (isCorrect) {
-        state.correctAnswers += 1;
-        state.combo += 1;
-        state.stepsDone = Math.min(GAME_CONFIG.gameplay.stepsToFinish, state.stepsDone + 1);
-        const comboLabel = GAME_CONFIG.ui.messages.combo[state.combo];
-        const msg = randomFrom(GAME_CONFIG.ui.messages.correct);
-        setMessage(comboLabel
-          ? `<strong>${msg}.</strong> ${comboLabel}! Серия: ${state.combo}.`
-          : `<strong>${msg}.</strong> Фишка делает шаг вперед.`
-        );
-        els.arena.classList.add('glow-correct');
-      } else {
-        state.wrongAnswers += 1;
-        state.combo = 0;
-        state.lives -= 1;
-        const msg = randomFrom(GAME_CONFIG.ui.messages.wrong);
-        setMessage(`<strong>${msg}.</strong> Правильный ответ: ${escapeHtml(q.answers[correct])}`);
-        els.arena.classList.add('glow-wrong');
-      }
-
-      clearFreezeTimer();
-      state.bonuses.freezeActive = false;
-      updateHUD();
-
-      setTimeout(() => {
-        if (state.stepsDone >= GAME_CONFIG.gameplay.stepsToFinish) {
-          finishGame(true);
-          return;
-        }
-        if (state.lives <= 0) {
-          finishGame(false);
-          return;
-        }
-        nextQuestion();
-      }, GAME_CONFIG.gameplay.questionAutoNextDelayMs);
-    }
-
-    function markSegments(selectedIndex, correctIndex, isCorrect) {
-      const q = state.questions[state.currentIndex];
-      const zoneShape = q.zoneShape || GAME_CONFIG.ui.zoneShape;
-      if (zoneShape === 'arc') {
-        const paths = [...els.zoneRoot.querySelectorAll('.arc-segment-path')];
-        paths.forEach(path => {
-          const idx = Number(path.dataset.index);
-          path.classList.remove('selected', 'correct', 'wrong');
-          if (idx === selectedIndex) path.classList.add('selected');
-          if (idx === correctIndex) path.classList.add('correct');
-          if (!isCorrect && idx === selectedIndex) path.classList.add('wrong');
-        });
-      } else {
-        const segments = [...els.zoneRoot.querySelectorAll('.segment')];
-        segments.forEach(seg => {
-          const idx = Number(seg.dataset.index);
-          seg.classList.remove('selected', 'correct', 'wrong');
-          if (idx === selectedIndex) seg.classList.add('selected');
-          if (idx === correctIndex) seg.classList.add('correct');
-          if (!isCorrect && idx === selectedIndex) seg.classList.add('wrong');
-        });
-      }
-    }
-
-    function nextQuestion() {
-      state.currentIndex += 1;
-      renderCurrentQuestion();
-    }
-
-    function finishGame(win) {
-      state.gameOver = true;
-      stopMotion();
-      clearFreezeTimer();
-      els.stopBtn.disabled = true;
-      els.freezeBtn.disabled = true;
-      els.fiftyBtn.disabled = true;
-
-      els.resultTitle.textContent = win ? 'Победа!' : 'Поражение';
-      els.resultText.textContent = win ? GAME_CONFIG.ui.messages.finishWin : GAME_CONFIG.ui.messages.finishLose;
-      els.resultCorrect.textContent = state.correctAnswers;
-      els.resultWrong.textContent = state.wrongAnswers;
-      const progress = Math.round((state.stepsDone / GAME_CONFIG.gameplay.stepsToFinish) * 100);
-      els.resultProgress.textContent = `${progress}%`;
-      els.resultOverlay.classList.add('open');
-
-      if (win) launchConfetti();
-    }
-
-    function useFreeze() {
-      if (els.freezeBtn.disabled || state.bonuses.freezeUsed || !state.motion.running) return;
-      state.bonuses.freezeUsed = true;
-      state.bonuses.freezeActive = true;
-      state.motion.frozen = true;
-      updateBonusButtons();
-
-      let seconds = GAME_CONFIG.gameplay.freezeDurationSec;
-      setMessage(`<strong>${GAME_CONFIG.ui.messages.freeze}</strong> Индикатор заморожен на <span class="countdown">${seconds}</span> сек.`);
-      els.hintBox.innerHTML = 'Во время заморозки можно нажать <strong>СТОП</strong>. Если не нажать, движение продолжится автоматически.';
-
-      state.bonuses.freezeCountdownTimer = setInterval(() => {
-        seconds -= 1;
-        if (seconds <= 0) {
-          clearFreezeTimer();
-          state.bonuses.freezeActive = false;
-          if (!state.gameOver && state.motion.running) {
-            state.motion.frozen = false;
-            setMessage('<strong>Время вышло.</strong> Индикатор снова движется.');
-          }
-          return;
-        }
-        setMessage(`<strong>${GAME_CONFIG.ui.messages.freeze}</strong> Индикатор заморожен на <span class="countdown">${seconds}</span> сек.`);
-      }, 1000);
-    }
-
-    function clearFreezeTimer() {
-      if (state.bonuses.freezeCountdownTimer) {
-        clearInterval(state.bonuses.freezeCountdownTimer);
-        state.bonuses.freezeCountdownTimer = null;
-      }
-    }
-
-    function useFifty() {
-      if (els.fiftyBtn.disabled || state.bonuses.fiftyUsed || state.bonuses.fiftyActive) return;
-      const q = state.questions[state.currentIndex];
-      if (q.answers.length < 3) return;
-
-      const wrongIndices = q.answers.map((_, i) => i).filter(i => i !== q.correct_index);
-      shuffleArray(wrongIndices);
-      const removableCount = Math.min(2, Math.max(0, wrongIndices.length - 1));
-      const toHide = wrongIndices.slice(0, removableCount);
-
-      state.motion.hiddenIndices = toHide;
-      state.bonuses.fiftyUsed = true;
-      state.bonuses.fiftyActive = true;
-      updateHiddenSegments();
-      updateBonusButtons();
-
-      const available = buildAvailableIndices(q.answers.length);
-      state.motion.availableIndices = available;
-      setMessage('<strong>50/50.</strong> Остались один правильный и один неправильный вариант.');
-      els.hintBox.innerHTML = `Теперь активные сегменты: <strong>${available.length}</strong>. Индикатор движется только по ним.`;
-    }
-
-    function updateHiddenSegments() {
-      const q = state.questions[state.currentIndex];
-      const zoneShape = q.zoneShape || GAME_CONFIG.ui.zoneShape;
-      const hiddenSet = new Set(state.motion.hiddenIndices);
-
-      if (zoneShape === 'arc') {
-        [...els.zoneRoot.querySelectorAll('.arc-segment-path')].forEach(p => {
-          const idx = Number(p.dataset.index);
-          p.classList.toggle('hidden-by-5050', hiddenSet.has(idx));
-        });
-      } else {
-        [...els.zoneRoot.querySelectorAll('.segment')].forEach(seg => {
-          const idx = Number(seg.dataset.index);
-          seg.classList.toggle('hidden-by-5050', hiddenSet.has(idx));
-        });
-      }
-    }
-
-    function buildAvailableIndices(total) {
-      const hidden = new Set(state.motion.hiddenIndices || []);
-      return Array.from({ length: total }, (_, i) => i).filter(i => !hidden.has(i));
-    }
-
-    function setMessage(html) {
-      els.messageBox.innerHTML = html;
-    }
-
-    function launchConfetti() {
-      els.confetti.innerHTML = '';
-      const colors = ['#38bdf8', '#22c55e', '#f59e0b', '#ef4444', '#e879f9', '#f8fafc'];
-      for (let i = 0; i < 90; i++) {
-        const piece = document.createElement('span');
-        piece.className = 'confetti-piece';
-        piece.style.left = `${Math.random() * 100}%`;
-        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-        piece.style.transform = `translateY(0) rotate(${Math.random() * 360}deg)`;
-        piece.style.animationDuration = `${3 + Math.random() * 2.4}s`;
-        piece.style.animationDelay = `${Math.random() * .8}s`;
-        piece.style.opacity = `${0.7 + Math.random() * .3}`;
-        els.confetti.appendChild(piece);
-      }
-      setTimeout(() => { els.confetti.innerHTML = ''; }, 6500);
-    }
-
-    function describeArcSegment(cx, cy, innerR, outerR, startDeg, endDeg) {
-      const startOuter = polar(cx, cy, outerR, startDeg);
-      const endOuter = polar(cx, cy, outerR, endDeg);
-      const endInner = polar(cx, cy, innerR, endDeg);
-      const startInner = polar(cx, cy, innerR, startDeg);
-      const largeArc = endDeg - startDeg <= 180 ? '0' : '1';
-      return [
-        `M ${startOuter.x} ${startOuter.y}`,
-        `A ${outerR} ${outerR} 0 ${largeArc} 1 ${endOuter.x} ${endOuter.y}`,
-        `L ${endInner.x} ${endInner.y}`,
-        `A ${innerR} ${innerR} 0 ${largeArc} 0 ${startInner.x} ${startInner.y}`,
-        'Z'
-      ].join(' ');
-    }
-
-    function polar(cx, cy, r, angleDeg) {
-      const a = (angleDeg - 90) * Math.PI / 180;
-      return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
-    }
-
-    function randomFrom(arr) {
-      return arr[Math.floor(Math.random() * arr.length)] || '';
-    }
-
-    function shuffleArray(arr) {
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    }
-
-    function truncateText(text, max) {
-      return text.length <= max ? text : text.slice(0, max - 1) + '…';
-    }
-
-    function clamp(num, min, max) {
-      return Math.max(min, Math.min(max, num));
-    }
-
-    function translateZone(shape) {
-      return ({ horizontal: 'горизонтальная', vertical: 'вертикальная', arc: 'дуговая' }[shape]) || shape;
-    }
-
-    function translateMovement(type) {
-      return ({ pingpong: 'туда-обратно', cyclic: 'циклическое' }[type]) || type;
-    }
-
-    function pluralize(n, forms) {
-      const n10 = n % 10;
-      const n100 = n % 100;
-      if (n10 === 1 && n100 !== 11) return forms[0];
-      if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return forms[1];
-      return forms[2];
-    }
-
-    function escapeHtml(str) {
-      return String(str)
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-    }
-
-    els.stopBtn.addEventListener('click', onStopPress);
-    els.freezeBtn.addEventListener('click', useFreeze);
-    els.fiftyBtn.addEventListener('click', useFifty);
-    els.restartBtn.addEventListener('click', initGame);
-    els.exitBtn.addEventListener('click', () => {
-      els.resultOverlay.classList.remove('open');
-      setMessage('<strong>Игра завершена.</strong> Для нового запуска нажми «Сыграть ещё раз».');
-    });
-
-    window.addEventListener('resize', () => {
-      if (state.gameOver) return;
-      const q = state.questions[state.currentIndex];
-      if (!q) return;
-      const zoneShape = q.zoneShape || GAME_CONFIG.ui.zoneShape;
-      const bounds = calculateBounds(zoneShape, document.getElementById('indicator'));
-      state.motion.min = bounds.min;
-      state.motion.max = bounds.max;
-      updateIndicatorPosition(zoneShape, clamp(state.motion.pos, state.motion.min, state.motion.max));
-    });
-
-    initGame();
+      document.addEventListener('DOMContentLoaded', function () {
+        window.MomentOfTruth.init(demoConfig, demoQuestions, '#moment-of-truth-root').start();
+      });
+    })();
   </script>
 </body>
 </html>
