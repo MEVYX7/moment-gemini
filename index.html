@@ -316,16 +316,13 @@
 .mot-main::after {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 34%;
-  width: 62%;
-  height: 220px;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(73,216,255,0.12), transparent 68%);
-  filter: blur(24px);
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(73,216,255,0.035), transparent 24%, transparent 76%, rgba(89,243,178,0.025)),
+    linear-gradient(90deg, rgba(73,216,255,0.02), rgba(73,216,255,0.045) 50%, rgba(89,243,178,0.02));
   opacity: 0.9;
   pointer-events: none;
-}
+}}
 
 
 .mot-question {
